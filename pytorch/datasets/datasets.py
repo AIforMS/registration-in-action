@@ -1,5 +1,6 @@
 import math
 import sys
+
 sys.path.append(r'F:\shb_src\from_github\AIforMS\registration-in-action\pytorch')
 
 import os
@@ -151,11 +152,13 @@ class LPBADataset(Dataset):
                  image_name,
                  label_folder,
                  label_name,
-                 scannumbers):
+                 scannumbers,
+                 for_test=False):
 
         if image_name.find("?") == -1 or label_name.find("?") == -1:
             raise ValueError('error! filename must contain \"?\" to insert your chosen numbers')
 
+        self.for_test = for_test
         self.img_paths = []
         self.label_paths = []
 
@@ -169,25 +172,34 @@ class LPBADataset(Dataset):
         return self.len_
 
     def __getitem__(self, idx):
-        fix_idx = np.random.choice(np.where(np.arange(self.len_) != idx)[0])  # 随机选取一个 fixed image
+        if self.for_test:
+            img_path = self.img_paths[idx]
+            label_path = self.label_paths[idx]
 
-        # 用 nibabel 读取的图像会被旋转，需要得到原图的 affine 才能还原，很迷。但是在 inference 的时候保存的图像又是正常的，不不知为何。
-        # 可能是原本网络的输出就是旋转过后的，再次用 nibabel 保存之后又转回来了？
-        moving_img_path = self.img_paths[idx]
-        moving_label_path = self.label_paths[idx]
-        fixed_img_path = self.img_paths[fix_idx]
-        fixed_label_path = self.label_paths[fix_idx]
+            imgs = sitk.GetArrayFromImage(sitk.ReadImage(img_path))[np.newaxis, ...].astype(np.float32)
+            labels = sitk.GetArrayFromImage(sitk.ReadImage(label_path))[np.newaxis, ...].astype(np.float32)
 
-        moving_imgs = sitk.GetArrayFromImage(sitk.ReadImage(moving_img_path))[np.newaxis, ...].astype(np.float32)
-        moving_labels = sitk.GetArrayFromImage(sitk.ReadImage(moving_label_path))[np.newaxis, ...].astype(np.float32)
+            return imgs, labels
+        else:
+            fix_idx = np.random.choice(np.where(np.arange(self.len_) != idx)[0])  # 随机选取一个 fixed image
 
-        fixed_imgs = sitk.GetArrayFromImage(sitk.ReadImage(fixed_img_path))[np.newaxis, ...].astype(np.float32)
-        fixed_labels = sitk.GetArrayFromImage(sitk.ReadImage(fixed_label_path))[np.newaxis, ...].astype(np.float32)
+            # 用 nibabel 读取的图像会被旋转，需要得到原图的 affine 才能还原，很迷。但是在 inference 的时候保存的图像又是正常的，不不知为何。
+            # 可能是原本网络的输出就是旋转过后的，再次用 nibabel 保存之后又转回来了？
+            moving_img_path = self.img_paths[idx]
+            moving_label_path = self.label_paths[idx]
+            fixed_img_path = self.img_paths[fix_idx]
+            fixed_label_path = self.label_paths[fix_idx]
 
-        # # 这两个标签没有对应的结构，已经预处理
-        # label_arr[label_arr == 181.] = 0.
-        # label_arr[label_arr == 182.] = 0.
-        return moving_imgs, moving_labels, fixed_imgs, fixed_labels
+            moving_imgs = sitk.GetArrayFromImage(sitk.ReadImage(moving_img_path))[np.newaxis, ...].astype(np.float32)
+            moving_labels = sitk.GetArrayFromImage(sitk.ReadImage(moving_label_path))[np.newaxis, ...].astype(np.float32)
+
+            fixed_imgs = sitk.GetArrayFromImage(sitk.ReadImage(fixed_img_path))[np.newaxis, ...].astype(np.float32)
+            fixed_labels = sitk.GetArrayFromImage(sitk.ReadImage(fixed_label_path))[np.newaxis, ...].astype(np.float32)
+
+            # # 这两个标签没有对应的结构，已经预处理
+            # label_arr[label_arr == 181.] = 0.
+            # label_arr[label_arr == 182.] = 0.
+            return moving_imgs, moving_labels, fixed_imgs, fixed_labels
 
     def get_labels_num(self):
         a_label = nib.load(self.label_paths[0]).get_fdata()
@@ -201,36 +213,49 @@ def lpba(logger,
          label_name=None,
          train_scannumbers=None,
          val_scannumbers=None,
+         scannumbers=None,
          batch_size=2,
          is_shuffle=True,
+         for_test=False,
          num_workers=2):
+    if for_test:
+        test_dataset = LPBADataset(image_folder=img_folder,
+                                   image_name=img_name,
+                                   label_folder=label_folder,
+                                   label_name=label_name,
+                                   scannumbers=scannumbers,
+                                   for_test=for_test)
+        test_loader = DataLoader(dataset=test_dataset,
+                                 batch_size=1, num_workers=num_workers)
+        return test_loader
 
-    train_dataset = LPBADataset(image_folder=img_folder,
-                                image_name=img_name,
-                                label_folder=label_folder,
-                                label_name=label_name,
-                                scannumbers=train_scannumbers)
+    else:
+        train_dataset = LPBADataset(image_folder=img_folder,
+                                    image_name=img_name,
+                                    label_folder=label_folder,
+                                    label_name=label_name,
+                                    scannumbers=train_scannumbers)
 
-    val_dataset = LPBADataset(image_folder=img_folder,
-                              image_name=img_name,
-                              label_folder=label_folder,
-                              label_name=label_name,
-                              scannumbers=val_scannumbers)
+        val_dataset = LPBADataset(image_folder=img_folder,
+                                  image_name=img_name,
+                                  label_folder=label_folder,
+                                  label_name=label_name,
+                                  scannumbers=val_scannumbers)
 
-    train_loader = DataLoader(dataset=train_dataset,
-                              batch_size=batch_size,
-                              shuffle=is_shuffle,
-                              drop_last=True,
-                              num_workers=num_workers)
+        train_loader = DataLoader(dataset=train_dataset,
+                                  batch_size=batch_size,
+                                  shuffle=is_shuffle,
+                                  drop_last=True,
+                                  num_workers=num_workers)
 
-    val_loader = DataLoader(dataset=val_dataset,
-                            batch_size=1, num_workers=num_workers)
+        val_loader = DataLoader(dataset=val_dataset,
+                                batch_size=1, num_workers=num_workers)
 
-    num_labels = train_dataset.get_labels_num()
-    logger.info(f'Training set sizes: {len(train_dataset)}, Train loader size: {len(train_loader)}, '
-                f'Validation set sizes: {len(val_dataset)}')
+        num_labels = train_dataset.get_labels_num()
+        logger.info(f'Training set sizes: {len(train_dataset)}, Train loader size: {len(train_loader)}, '
+                    f'Validation set sizes: {len(val_dataset)}')
 
-    return train_loader, val_loader, num_labels
+        return train_loader, val_loader, num_labels
 
 
 if __name__ == '__main__':
