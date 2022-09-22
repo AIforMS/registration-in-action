@@ -4,6 +4,8 @@
 
 ## 2D 配准
 
+参考：https://www.kaggle.com/code/adalca/learn2reg/notebook
+
 ### 数据集
 
 MNIST
