@@ -167,3 +167,29 @@ class LinearWarmupCosineAnnealingLR(_LRScheduler):
             (1 + math.cos(math.pi * (self.last_epoch - self.warmup_epochs) / (self.max_epochs - self.warmup_epochs)))
             for base_lr in self.base_lrs
         ]
+
+
+class ImgTransform:
+    """
+    Image intensity normalization.
+
+    Params:
+        :scale_type: normalization way, default mean-std scaled
+        :img: ndarray or tensor
+    Return:
+        scaled img
+    """
+    def __init__(self, scale_type="mean-std"):
+        assert scale_type in ["mean-std", "max-min", "old-way", None], \
+            f"scale type include ['mean-std', 'max-min', 'old-way', 'None'], but got {scale_type}"
+        self.scale_type = scale_type
+
+    def __call__(self, img):
+        if self.scale_type == "mean-std":
+            return (img - img.mean()) / img.std()
+        if self.scale_type == "max-min":
+            return (img - img.min()) / (img.max() - img.min())
+        if self.scale_type == "old-way":
+            return img / 1024.0 + 1.0
+        if self.scale_type is None:
+            return img

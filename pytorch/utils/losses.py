@@ -111,17 +111,29 @@ def gradient_loss(s, penalty='l2'):
     """
     displacement regularization loss
     """
-    dy = torch.abs(s[:, :, 1:, :, :] - s[:, :, :-1, :, :])
-    dx = torch.abs(s[:, :, :, 1:, :] - s[:, :, :, :-1, :])
-    dz = torch.abs(s[:, :, :, :, 1:] - s[:, :, :, :, :-1])
+    if len(s.shape) == 5:
+        dy = torch.abs(s[:, :, 1:, :, :] - s[:, :, :-1, :, :])
+        dx = torch.abs(s[:, :, :, 1:, :] - s[:, :, :, :-1, :])
+        dz = torch.abs(s[:, :, :, :, 1:] - s[:, :, :, :, :-1])
 
-    if (penalty == 'l2'):
-        dy = dy * dy
-        dx = dx * dx
-        dz = dz * dz
+        if penalty == 'l2':
+            dy = dy * dy
+            dx = dx * dx
+            dz = dz * dz
+        d = torch.mean(dx) + torch.mean(dy) + torch.mean(dz)
+        res = d / 3.0
 
-    d = torch.mean(dx) + torch.mean(dy) + torch.mean(dz)
-    return d / 3.0
+    elif len(s.shape) == 4:
+        dy = torch.abs(s[:, :, 1:, :] - s[:, :, :-1, :])
+        dx = torch.abs(s[:, :, :, 1:] - s[:, :, :, :-1])
+
+        if penalty == 'l2':
+            dy = dy * dy
+            dx = dx * dx
+        d = torch.mean(dx) + torch.mean(dy)
+        res = d / 2.0
+
+    return res
 
 
 def pdist_squared(x):

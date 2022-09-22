@@ -1,1 +1,1 @@
-from voxelmorph import VxmDense, SpatialTransformer
+from .voxelmorph import VxmDense, SpatialTransformer

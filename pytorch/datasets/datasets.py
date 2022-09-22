@@ -1,4 +1,7 @@
 import math
+import sys
+sys.path.append(r'F:\shb_src\from_github\AIforMS\registration-in-action\pytorch')
+
 import os
 import numpy as np
 from PIL import Image
@@ -7,6 +10,8 @@ import SimpleITK as sitk
 import torch
 from torch.utils.data import Dataset, DataLoader, Sampler
 from torchvision import datasets, transforms
+
+from utils import ImgTransform
 
 
 class LabelSampler(Sampler):
@@ -64,8 +69,8 @@ class MNISTDataset(Dataset):
         train_val_indices = torch.where(train_set.train_labels == choose_label)[0]
         test_indices = torch.where(test_set.test_labels == choose_label)[0]
 
-        val_indices = train_val_indices[:val_size]
-        train_indices = train_val_indices[val_size:]
+        val_indices = np.random.choice(train_val_indices, val_size)  # 随机选择验证集
+        train_indices = torch.tensor([i for i in train_val_indices.numpy() if i not in val_indices])
 
         self.train_imgs = train_set.data[train_indices]
         self.train_labels = train_set.train_labels[train_indices]
@@ -120,7 +125,7 @@ class MNISTDataset(Dataset):
             return moving_img, fixed_img
 
 
-def mnist(root='./data/mnist',
+def mnist(root='data/mnist',
           for_what='train',
           choose_label=5,
           val_size=512,
@@ -231,9 +236,12 @@ if __name__ == '__main__':
 
     vis = visdom.Visdom()
 
-    batch_size = 12
+    batch_size = 4
     row = int(math.sqrt(batch_size))  # 下取整
     col = math.ceil(batch_size / row)  # 上取整
+
+    val_loader = mnist(choose_label=5, batch_size=batch_size, for_what='val')
+    moving_img, fixed_img = next(iter(val_loader))
 
     # data_loader = mnist(choose_label=5, batch_size=batch_size, for_what='test')
     # for i, (moving_img, fixed_img) in enumerate(data_loader):
@@ -247,7 +255,10 @@ if __name__ == '__main__':
     #     plt.show()
     #     break
 
-    val_loader = mnist(choose_label=5, batch_size=batch_size, for_what='val')
-    moving_img, fixed_img = next(iter(val_loader))
-    images = torch.vstack([moving_img, fixed_img])
-    vis.images(torch.randn((20, 3, 32, 32)), nrow=4, opts={'cmap': 'gray'})
+    trans = ImgTransform(scale_type='max-min')
+    moving_img = (trans(moving_img) * 255).type(dtype=torch.uint8)
+    fixed_img = (trans(fixed_img) * 255).type(dtype=torch.uint8)
+
+    vis.images(moving_img, nrow=1, win='mov', opts={'title': 'Moving Images'})
+    vis.images(moving_img, nrow=1, win='moved', opts={'title': 'Moved Images'})
+    vis.images(fixed_img, nrow=1, win='fix', opts={'title': 'fixed Images'})

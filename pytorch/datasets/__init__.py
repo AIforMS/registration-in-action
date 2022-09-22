@@ -1,1 +1,1 @@
-from datasets import mnist, lpba
+from .datasets import mnist, lpba
