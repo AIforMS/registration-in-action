@@ -1,6 +1,6 @@
 # registration-in-action
 
-动手学深度学习图像配准（DLIR）
+动手学深度学习图像配准（DLIR），基于 [VoxelMorph](https://github.com/voxelmorph/voxelmorph)。
 
 ## 2D 配准
 
