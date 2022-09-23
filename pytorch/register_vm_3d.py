@@ -25,35 +25,32 @@ def main():
     # read/parse user command line input
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-dataset", dest="dataset", choices=["tcia", "bcv", "lpba"],
-                        help="either tcia or visceral", default='lpba')
-    parser.add_argument("-model", dest="model", help="filename of pytorch pth model",
+    parser.add_argument("-model", help="filename of pytorch pth model",
                         default='output/lpba/xxx.pth', )
-    parser.add_argument("-with_BN", help="OBELISK Reg_Net with BN or not", action="store_true")
 
-    parser.add_argument("-input", dest="input", help="images folder",
+    parser.add_argument("-img_folder", help="images folder",
                         default=r"D:\code_sources\from_github\Medical Images Seg & Reg\MICCAI2020\vm_troch\dataset\LPBA40\train", )
-    parser.add_argument("-groundtruth", dest="groundtruth", help="labels folder",
+    parser.add_argument("-label_folder", help="labels folder",
                         default=r'D:\code_sources\from_github\Medical Images Seg & Reg\MICCAI2020\vm_troch\dataset\LPBA40\label')
-    parser.add_argument("-img_name", dest="img_name",
+    parser.add_argument("-img_name",
                         help="prototype scan filename i.e. pancreas_ct?.nii.gz",  # img?_bcv_CT.nii.gz
                         default='S?.delineation.skullstripped.nii.gz')
-    parser.add_argument("-label_name", dest="label_name", help="prototype segmentation name i.e. label_ct?.nii.gz",
+    parser.add_argument("-label_name", help="prototype segmentation name i.e. label_ct?.nii.gz",
                         default="S?.delineation.structure.label.nii.gz")
-    parser.add_argument("-fix_number", dest="fix_number", help="A number of fixed image",
+    parser.add_argument("-fix_number", help="A number of fixed image",
                         type=lambda s: [int(n) for n in s.split()],
                         default="1")
-    parser.add_argument("-mov_numbers", dest="mov_numbers", help="list of numbers of moving images",
+    parser.add_argument("-mov_numbers", help="list of numbers of moving images",
                         type=lambda s: [int(n) for n in s.split()],
                         default="2 3 4 5 6 7 8 9")
 
-    parser.add_argument("-output", dest="output", help="nii.gz label output prediction",
+    parser.add_argument("-output", help="nii.gz label output prediction",
                         default="output/lpba_test/")
 
     args = parser.parse_args()
     d_options = vars(args)
-    img_folder = d_options['input']
-    label_folder = d_options['groundtruth']
+    img_folder = d_options['img_folder']
+    label_folder = d_options['label_folder']
     img_name = d_options['img_name']
     label_name = d_options['label_name']
     output = d_options['output']
@@ -110,8 +107,6 @@ def main():
 
         t1 = time.time()
         total_time.append(t1 - t0)
-        # if d_options['dataset'] == 'visceral':
-        #     predict = F.interpolate(predict, size=[D_in0, H_in0, W_in0], mode='trilinear', align_corners=False)
 
         save_path = os.path.join(d_options['output'], 'pred?_lpba.nii.gz')
 
