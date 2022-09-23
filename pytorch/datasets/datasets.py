@@ -1,8 +1,6 @@
 import math
 import sys
 
-sys.path.append(r'F:\shb_src\from_github\AIforMS\registration-in-action\pytorch')
-
 import os
 import numpy as np
 from PIL import Image
@@ -11,6 +9,9 @@ import SimpleITK as sitk
 import torch
 from torch.utils.data import Dataset, DataLoader, Sampler
 from torchvision import datasets, transforms
+
+data_root = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(data_root, os.path.pardir))  # 加入本文件夹的上一级路径，以便调用utils
 
 from utils import ImgTransform
 
@@ -126,7 +127,7 @@ class MNISTDataset(Dataset):
             return moving_img, fixed_img
 
 
-def mnist(root='datasets/data/mnist',
+def mnist(root=data_root,
           for_what='train',
           choose_label=5,
           val_size=512,

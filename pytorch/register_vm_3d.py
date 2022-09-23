@@ -40,12 +40,12 @@ def main():
                         default='S?.delineation.skullstripped.nii.gz')
     parser.add_argument("-label_name", dest="label_name", help="prototype segmentation name i.e. label_ct?.nii.gz",
                         default="S?.delineation.structure.label.nii.gz")
-    parser.add_argument("-fix_number", dest="fix_number", help="number of fixed image",
+    parser.add_argument("-fix_number", dest="fix_number", help="A number of fixed image",
                         type=lambda s: [int(n) for n in s.split()],
                         default="1")
     parser.add_argument("-mov_numbers", dest="mov_numbers", help="list of numbers of moving images",
                         type=lambda s: [int(n) for n in s.split()],
-                        default="29")  # 2 3 4 5 6 7 8 9
+                        default="2 3 4 5 6 7 8 9")
 
     parser.add_argument("-output", dest="output", help="nii.gz label output prediction",
                         default="output/lpba_test/")
