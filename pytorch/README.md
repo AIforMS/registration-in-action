@@ -60,7 +60,7 @@ python train_vm_2d.py \
 
 数字 5 的预训练结果见 `ckpts/mnist`
 
-![visdom-train](./pytorch/ckpts/mnist/visdom-train.jpg)
+![visdom-train](./ckpts/mnist/visdom-train.jpg)
 
 ### 预测
 
@@ -78,12 +78,12 @@ python register_vm_2d.py \
 
 预测结果可视化：
 
-![visdom-train](./pytorch/ckpts/mnist/visdom-test-5.jpg)
+![visdom-train](./ckpts/mnist/visdom-test-5.jpg)
 
 模型神奇地显示出了泛化效果，在没有参与训练的数字 3 上也可以配准， 其它数字也一样：
 
-![visdom-train](./pytorch/ckpts/mnist/visdom-test-3.jpg)
-![visdom-train](./pytorch/ckpts/mnist/visdom-test-7.jpg)
+![visdom-train](./ckpts/mnist/visdom-test-3.jpg)
+![visdom-train](./ckpts/mnist/visdom-test-7.jpg)
 
 
 ## 3D 配准
