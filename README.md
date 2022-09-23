@@ -22,7 +22,7 @@
     | MP Heinrich, L Hansen | [Deeds](https://github.com/mattiaspaul/deedsBCV)、[OBELISK](https://github.com/mattiaspaul/OBELISK)、[PDD_Net](https://github.com/multimodallearning/pdd_net) | [mpheinrich](http://mpheinrich.de/)、 [researchgate](https://www.researchgate.net/profile/Mattias-Heinrich) | Deeds 是我用过配准性能最好的，幸好它是传统配准 :grimacing: ，OBELISK 分割性能也很好，而且轻量。 |
     | Yipeng Hu | [Weakly Reg](https://www.sciencedirect.com/science/article/pii/S1361841518301051?via%3Dihub)、[DeepReg](https://github.com/DeepRegNet/DeepReg) | https://iris.ucl.ac.uk/iris/browse/profile?upi=YHUXX66 | 我们开始使用分割标签做弱监督配准学习 |
     | Tony C.W. Mok | [LapIRN](https://github.com/cwmok)、[C2FViT](https://github.com/cwmok/C2FViT) | https://cwmok.github.io/ | 他总是第一名 |
-    | 医学图像配准软件 ANTs | [Advanced Normalization Tools](https://github.com/ANTsX/ANTsPy) | [GitHub](https://github.com/ANTsX/ANTsPy)、[CSDN](https://blog.csdn.net/zuzhiang/article/details/104930000) | 常用的传统配准方法 baseline |
+    | ANTs | [Advanced Normalization Tools](https://github.com/ANTsX/ANTsPy) | [GitHub](https://github.com/ANTsX/ANTsPy)、[CSDN](https://blog.csdn.net/zuzhiang/article/details/104930000) | 常用的传统配准方法 baseline |
 
 - 推荐文献检索网站：
 
