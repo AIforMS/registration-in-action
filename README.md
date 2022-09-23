@@ -151,3 +151,33 @@ python register_vm_3d.py \
 ```
 
 会保存 moved image、moved label、flow field，评估指标保存在 test.log。
+
+
+## ANTs
+
+### 运行
+
+> **ants_baseline.py**
+ 
+```shell
+#!/bin/bash
+#SBATCH -J ants_lpba
+#SBATCH -p gpu1
+#SBATCH -N 1
+#SBATCH -n 20
+#SBATCH -o logs/trainOutLPBAAnts.txt
+#SBATCH -e logs/trainErrLPBAAnts.txt
+
+cd $SLURM_SUBMIT_DIR
+
+python ants_baseline.py \
+    -dataset lpba \
+    -img_folder ./dataset/LPBA40/train \
+    -label_folder ./dataset/LPBA40/label \
+    -mov_numbers "1 8 9 11 14 18 33" \
+    -fix_number 7 \
+    -img_name S?.delineation.skullstripped.nii.gz \
+    -label_name S?.delineation.structure.label.nii.gz \
+    -trans_typ SyN \
+    -output output/ANTs_SyN/lpba/fix_7
+```
