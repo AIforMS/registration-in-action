@@ -1,12 +1,30 @@
 # registration-in-action
 
-动手学深度学习图像配准（DLIR），基于 [VoxelMorph](https://github.com/voxelmorph/voxelmorph) 。
+深度学习图像配准（Deep Learning Image Registration, DLIR），基于 [VoxelMorph](https://github.com/voxelmorph/voxelmorph) 。
 
-推荐 DLIR 入门教程：
+欢迎补充
 
-- https://www.kaggle.com/code/adalca/learn2reg/notebook
-- [DeepReg Intro to DLIR](https://github.com/DeepRegNet/DeepReg/blob/main/docs/Intro_to_Medical_Image_Registration.ipynb)
-- [Deep learning and medical imaging](https://theaisummer.com/medical-image-deep-learning/)
+---
+
+- 推荐 DLIR 入门教程：
+
+    - https://www.kaggle.com/code/adalca/learn2reg/notebook
+    - [DeepReg Intro to DLIR](https://github.com/DeepRegNet/DeepReg/blob/main/docs/Intro_to_Medical_Image_Registration.ipynb)
+    - [Deep learning and medical imaging](https://theaisummer.com/medical-image-deep-learning/)
+
+- 推荐 DLIR 领域大佬：
+
+    | 学者 | 代表作 | 个人网页 | 备注 |
+    | -- | -- | -- | -- |
+    | Adrian V. Dalca | [VoxelMorph](https://arxiv.org/abs/1809.05231) | http://www.mit.edu/~adalca/ | VM 掀起 DLIR 热潮 |
+    | MP Heinrich, L Hansen | [Deeds](https://github.com/mattiaspaul/deedsBCV)、[OBELISK](https://github.com/mattiaspaul/OBELISK)、[PDD_Net](https://github.com/multimodallearning/pdd_net) | [mpheinrich](http://mpheinrich.de/)、 [researchgate](https://www.researchgate.net/profile/Mattias-Heinrich) | Deeds 是我用过配准性能最好的，幸好它是传统配准 :grimacing: ，OBELISK 分割性能也很好，而且轻量。 |
+    | Yipeng Hu | [Weakly Reg](https://www.sciencedirect.com/science/article/pii/S1361841518301051?via%3Dihub)、[DeepReg](https://github.com/DeepRegNet/DeepReg) | https://iris.ucl.ac.uk/iris/browse/profile?upi=YHUXX66 | 我们开始使用分割标签做弱监督配准学习 |
+    | Tony C.W. Mok | [LapIRN](https://github.com/cwmok)、[C2FViT](https://github.com/cwmok/C2FViT) | https://cwmok.github.io/ | 他总是第一名 |
+
+- 推荐文献检索网站：
+
+    - https://www.connectedpapers.com/
+    - https://paperswithcode.com/
 
 ## 2D 配准
 
