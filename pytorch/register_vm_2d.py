@@ -8,8 +8,11 @@ import torch
 import visdom
 
 from datasets import mnist
-from utils.utils import ImgTransform, get_logger
+from utils.utils import ImgTransform, get_logger, setup_seed
+from utils.metrics import jacobian_determinant
 from models import VxmDense
+
+setup_seed()
 
 # parse commandline args
 parser = argparse.ArgumentParser()
@@ -27,6 +30,8 @@ parser.add_argument("-model", help="Path to pretrained model to continute traini
 parser.add_argument("-is_visdom", help="Using Visdom to visualize Training process",
                     type=lambda s: False if s == "False" else True, default=True)
 parser.add_argument("-num_workers", help="Dataloader num_workers", type=int, default=2)
+
+parser.add_argument("-how_much", help="how many numbers would you want to visdom", type=int, default=5)
 parser.add_argument("-save_images", help="Will you wanna save images?",
                     type=lambda s: True if s == 'True' else False, default=True)
 
@@ -42,6 +47,7 @@ if args.is_visdom:
     vis = visdom.Visdom()
 
 logger = get_logger(args.output, name='test')
+logger.info(f"Register on choose label: {args.choose_label}, with model: {args.model}, results in {args.output}")
 
 
 def vm_reg(mov_img, fix_img):
@@ -66,10 +72,18 @@ def main():
                         num_workers=args.num_workers)
 
     for val_idx, (moving_img, fixed_img) in enumerate(test_loader):
-        if val_idx > 2: break  # 只循环3次
+        if val_idx > args.how_much: break  # 只循环 how_much 次
+        Jac_std, Jac_neg = [], []
 
         moving_img, fixed_img = moving_img.to(device), fixed_img.to(device)
         moved_img, flow_field = vm_reg(moving_img, fixed_img)
+
+        for i in range(flow_field.shape[0]):
+            jacdet = jacobian_determinant(flow_field[i].permute(1, 2, 0).cpu())
+            Jac_std.append(jacdet.std())
+            Jac_neg.append(100 * ((jacdet <= 0.).sum() / jacdet.size))
+
+        logger.info(f"stdJac {np.mean(Jac_std) :.3f}, Jac<=0 {np.mean(Jac_neg) :.5f}%")
 
         # visualization
         if args.is_visdom:

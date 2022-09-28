@@ -10,11 +10,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
 
-from utils import get_logger, countParam, LinearWarmupCosineAnnealingLR, augment_affine
+from utils import get_logger, countParam, LinearWarmupCosineAnnealingLR, augment_affine, setup_seed
 from utils.losses import gradient_loss, NCCLoss, MIND_loss, DiceCELoss
-from utils.metrics import dice_coeff, jacobian_determinant_3d
+from utils.metrics import dice_coeff, Get_Jac
 from datasets import lpba
 from models import VxmDense, SpatialTransformer
+
+setup_seed()
 
 
 def main():
@@ -243,7 +245,7 @@ def main():
                     dice_all_val[val_idx] = dice_coeff(fixed_label.cpu(), moved_label.long().cpu())
 
                     # complexity of transformation and foldings
-                    jacdet = jacobian_determinant_3d(flow_field).cpu()
+                    jacdet = Get_Jac(flow_field.permute(0, 2, 3, 4, 1)).cpu()
                     Jac_std.append(jacdet.std())
                     Jac_neg.append(100 * ((jacdet <= 0.).sum() / jacdet.numel()))
 

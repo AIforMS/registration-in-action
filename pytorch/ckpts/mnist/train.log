@@ -1,0 +1,155 @@
+09/28/2022 15:03:31 - train_vm_2d.py[line:61] - INFO: Training with choose label 5, output to output/mnist2/
+09/28/2022 15:03:42 - train_vm_2d.py[line:85] - INFO: VM reg_net params: 109170
+09/28/2022 15:03:42 - __init__.py[line:505] - WARNING: Setting up a new session...
+09/28/2022 15:03:42 - __init__.py[line:590] - INFO: Visdom successfully connected to server
+09/28/2022 15:03:42 - train_vm_2d.py[line:119] - INFO: visdom starting, need to open the server: python -m visdom.server
+09/28/2022 15:04:59 - train_vm_2d.py[line:61] - INFO: Training with choose label 5, output to output/mnist2/
+09/28/2022 15:05:00 - train_vm_2d.py[line:85] - INFO: VM reg_net params: 109170
+09/28/2022 15:05:00 - __init__.py[line:505] - WARNING: Setting up a new session...
+09/28/2022 15:05:00 - __init__.py[line:590] - INFO: Visdom successfully connected to server
+09/28/2022 15:05:00 - train_vm_2d.py[line:119] - INFO: visdom starting, need to open the server: python -m visdom.server
+09/28/2022 15:07:23 - train_vm_2d.py[line:61] - INFO: Training with choose label 5, output to output/mnist2/
+09/28/2022 15:07:24 - train_vm_2d.py[line:85] - INFO: VM reg_net params: 109170
+09/28/2022 15:07:24 - __init__.py[line:505] - WARNING: Setting up a new session...
+09/28/2022 15:07:24 - __init__.py[line:590] - INFO: Visdom successfully connected to server
+09/28/2022 15:07:24 - train_vm_2d.py[line:119] - INFO: visdom starting, need to open the server: python -m visdom.server
+09/28/2022 15:07:33 - train_vm_2d.py[line:192] - INFO: epoch 0, step 78, time train 5.223, time infer 0.005, total loss 71.419, sim loss 71.419, grad loss 0.001, stdJac 0.032, Jac<=0 0.000%
+09/28/2022 15:07:41 - train_vm_2d.py[line:192] - INFO: epoch 1, step 156, time train 4.649, time infer 0.006, total loss 66.073, sim loss 66.072, grad loss 0.002, stdJac 0.042, Jac<=0 0.000%
+09/28/2022 15:07:49 - train_vm_2d.py[line:192] - INFO: epoch 2, step 234, time train 4.567, time infer 0.005, total loss 64.057, sim loss 64.053, grad loss 0.004, stdJac 0.139, Jac<=0 0.000%
+09/28/2022 15:07:57 - train_vm_2d.py[line:192] - INFO: epoch 3, step 312, time train 4.614, time infer 0.006, total loss 50.517, sim loss 50.452, grad loss 0.064, stdJac 0.254, Jac<=0 0.000%
+09/28/2022 15:08:05 - train_vm_2d.py[line:192] - INFO: epoch 4, step 390, time train 4.593, time infer 0.006, total loss 43.074, sim loss 42.968, grad loss 0.106, stdJac 0.381, Jac<=0 0.000%
+09/28/2022 15:08:13 - train_vm_2d.py[line:192] - INFO: epoch 5, step 468, time train 4.625, time infer 0.005, total loss 37.126, sim loss 36.957, grad loss 0.169, stdJac 0.420, Jac<=0 0.000%
+09/28/2022 15:08:21 - train_vm_2d.py[line:192] - INFO: epoch 6, step 546, time train 4.701, time infer 0.006, total loss 32.841, sim loss 32.600, grad loss 0.240, stdJac 0.560, Jac<=0 0.000%
+09/28/2022 15:08:29 - train_vm_2d.py[line:192] - INFO: epoch 7, step 624, time train 4.727, time infer 0.005, total loss 30.410, sim loss 30.103, grad loss 0.307, stdJac 0.634, Jac<=0 0.000%
+09/28/2022 15:08:37 - train_vm_2d.py[line:192] - INFO: epoch 8, step 702, time train 4.589, time infer 0.005, total loss 27.945, sim loss 27.600, grad loss 0.345, stdJac 0.590, Jac<=0 0.000%
+09/28/2022 15:08:45 - train_vm_2d.py[line:192] - INFO: epoch 9, step 780, time train 4.534, time infer 0.006, total loss 26.192, sim loss 25.815, grad loss 0.378, stdJac 0.738, Jac<=0 0.000%
+09/28/2022 15:08:53 - train_vm_2d.py[line:192] - INFO: epoch 10, step 858, time train 4.65, time infer 0.005, total loss 24.973, sim loss 24.577, grad loss 0.396, stdJac 0.754, Jac<=0 0.000%
+09/28/2022 15:09:01 - train_vm_2d.py[line:192] - INFO: epoch 11, step 936, time train 4.553, time infer 0.005, total loss 23.635, sim loss 23.208, grad loss 0.428, stdJac 0.868, Jac<=0 0.037%
+09/28/2022 15:09:08 - train_vm_2d.py[line:192] - INFO: epoch 12, step 1014, time train 4.584, time infer 0.005, total loss 22.516, sim loss 22.093, grad loss 0.423, stdJac 0.719, Jac<=0 0.000%
+09/28/2022 15:09:16 - train_vm_2d.py[line:192] - INFO: epoch 13, step 1092, time train 4.701, time infer 0.006, total loss 21.509, sim loss 21.092, grad loss 0.417, stdJac 0.778, Jac<=0 0.000%
+09/28/2022 15:09:25 - train_vm_2d.py[line:192] - INFO: epoch 14, step 1170, time train 4.592, time infer 0.006, total loss 20.303, sim loss 19.909, grad loss 0.394, stdJac 0.705, Jac<=0 0.000%
+09/28/2022 15:09:33 - train_vm_2d.py[line:192] - INFO: epoch 15, step 1248, time train 4.678, time infer 0.005, total loss 19.352, sim loss 18.978, grad loss 0.374, stdJac 0.707, Jac<=0 0.000%
+09/28/2022 15:09:41 - train_vm_2d.py[line:192] - INFO: epoch 16, step 1326, time train 4.758, time infer 0.005, total loss 18.550, sim loss 18.200, grad loss 0.350, stdJac 0.659, Jac<=0 0.000%
+09/28/2022 15:09:49 - train_vm_2d.py[line:192] - INFO: epoch 17, step 1404, time train 4.638, time infer 0.005, total loss 17.510, sim loss 17.179, grad loss 0.330, stdJac 0.650, Jac<=0 0.000%
+09/28/2022 15:09:57 - train_vm_2d.py[line:192] - INFO: epoch 18, step 1482, time train 4.636, time infer 0.006, total loss 17.037, sim loss 16.711, grad loss 0.326, stdJac 0.589, Jac<=0 0.000%
+09/28/2022 15:10:05 - train_vm_2d.py[line:192] - INFO: epoch 19, step 1560, time train 4.779, time infer 0.005, total loss 16.473, sim loss 16.156, grad loss 0.317, stdJac 0.627, Jac<=0 0.000%
+09/28/2022 15:10:13 - train_vm_2d.py[line:192] - INFO: epoch 20, step 1638, time train 4.568, time infer 0.005, total loss 15.638, sim loss 15.330, grad loss 0.308, stdJac 0.683, Jac<=0 0.000%
+09/28/2022 15:10:21 - train_vm_2d.py[line:192] - INFO: epoch 21, step 1716, time train 4.577, time infer 0.007, total loss 15.179, sim loss 14.870, grad loss 0.310, stdJac 0.646, Jac<=0 0.000%
+09/28/2022 15:10:29 - train_vm_2d.py[line:192] - INFO: epoch 22, step 1794, time train 4.604, time infer 0.006, total loss 14.884, sim loss 14.576, grad loss 0.308, stdJac 0.606, Jac<=0 0.000%
+09/28/2022 15:10:37 - train_vm_2d.py[line:192] - INFO: epoch 23, step 1872, time train 4.794, time infer 0.006, total loss 14.390, sim loss 14.080, grad loss 0.311, stdJac 0.579, Jac<=0 0.000%
+09/28/2022 15:10:45 - train_vm_2d.py[line:192] - INFO: epoch 24, step 1950, time train 4.648, time infer 0.006, total loss 14.010, sim loss 13.700, grad loss 0.310, stdJac 0.631, Jac<=0 0.000%
+09/28/2022 15:10:53 - train_vm_2d.py[line:192] - INFO: epoch 25, step 2028, time train 4.837, time infer 0.006, total loss 13.815, sim loss 13.505, grad loss 0.310, stdJac 0.622, Jac<=0 0.000%
+09/28/2022 15:11:01 - train_vm_2d.py[line:192] - INFO: epoch 26, step 2106, time train 4.559, time infer 0.005, total loss 13.519, sim loss 13.209, grad loss 0.309, stdJac 0.651, Jac<=0 0.000%
+09/28/2022 15:11:09 - train_vm_2d.py[line:192] - INFO: epoch 27, step 2184, time train 4.562, time infer 0.005, total loss 13.355, sim loss 13.044, grad loss 0.311, stdJac 0.606, Jac<=0 0.000%
+09/28/2022 15:11:17 - train_vm_2d.py[line:192] - INFO: epoch 28, step 2262, time train 4.565, time infer 0.006, total loss 12.925, sim loss 12.610, grad loss 0.315, stdJac 0.591, Jac<=0 0.000%
+09/28/2022 15:11:25 - train_vm_2d.py[line:192] - INFO: epoch 29, step 2340, time train 4.571, time infer 0.005, total loss 12.789, sim loss 12.471, grad loss 0.317, stdJac 0.648, Jac<=0 0.000%
+09/28/2022 15:11:33 - train_vm_2d.py[line:192] - INFO: epoch 30, step 2418, time train 4.648, time infer 0.005, total loss 12.696, sim loss 12.379, grad loss 0.317, stdJac 0.547, Jac<=0 0.000%
+09/28/2022 15:11:41 - train_vm_2d.py[line:192] - INFO: epoch 31, step 2496, time train 4.71, time infer 0.005, total loss 12.460, sim loss 12.148, grad loss 0.312, stdJac 0.618, Jac<=0 0.000%
+09/28/2022 15:11:49 - train_vm_2d.py[line:192] - INFO: epoch 32, step 2574, time train 4.6, time infer 0.005, total loss 12.228, sim loss 11.912, grad loss 0.316, stdJac 0.593, Jac<=0 0.000%
+09/28/2022 15:11:57 - train_vm_2d.py[line:192] - INFO: epoch 33, step 2652, time train 4.635, time infer 0.004, total loss 12.065, sim loss 11.748, grad loss 0.318, stdJac 0.612, Jac<=0 0.000%
+09/28/2022 15:12:05 - train_vm_2d.py[line:192] - INFO: epoch 34, step 2730, time train 4.604, time infer 0.005, total loss 12.056, sim loss 11.733, grad loss 0.322, stdJac 0.601, Jac<=0 0.000%
+09/28/2022 15:12:13 - train_vm_2d.py[line:192] - INFO: epoch 35, step 2808, time train 4.637, time infer 0.005, total loss 11.797, sim loss 11.475, grad loss 0.322, stdJac 0.593, Jac<=0 0.000%
+09/28/2022 15:12:21 - train_vm_2d.py[line:192] - INFO: epoch 36, step 2886, time train 4.583, time infer 0.006, total loss 11.482, sim loss 11.161, grad loss 0.321, stdJac 0.599, Jac<=0 0.000%
+09/28/2022 15:12:29 - train_vm_2d.py[line:192] - INFO: epoch 37, step 2964, time train 4.802, time infer 0.005, total loss 11.294, sim loss 10.973, grad loss 0.321, stdJac 0.623, Jac<=0 0.000%
+09/28/2022 15:12:37 - train_vm_2d.py[line:192] - INFO: epoch 38, step 3042, time train 4.649, time infer 0.005, total loss 11.322, sim loss 10.995, grad loss 0.327, stdJac 0.656, Jac<=0 0.000%
+09/28/2022 15:12:45 - train_vm_2d.py[line:192] - INFO: epoch 39, step 3120, time train 4.674, time infer 0.005, total loss 11.129, sim loss 10.804, grad loss 0.326, stdJac 0.663, Jac<=0 0.000%
+09/28/2022 15:12:53 - train_vm_2d.py[line:192] - INFO: epoch 40, step 3198, time train 4.63, time infer 0.006, total loss 10.975, sim loss 10.648, grad loss 0.327, stdJac 0.619, Jac<=0 0.000%
+09/28/2022 15:13:01 - train_vm_2d.py[line:192] - INFO: epoch 41, step 3276, time train 4.619, time infer 0.005, total loss 10.949, sim loss 10.622, grad loss 0.327, stdJac 0.577, Jac<=0 0.000%
+09/28/2022 15:13:09 - train_vm_2d.py[line:192] - INFO: epoch 42, step 3354, time train 4.594, time infer 0.007, total loss 10.804, sim loss 10.482, grad loss 0.322, stdJac 0.632, Jac<=0 0.000%
+09/28/2022 15:13:17 - train_vm_2d.py[line:192] - INFO: epoch 43, step 3432, time train 4.737, time infer 0.005, total loss 10.635, sim loss 10.317, grad loss 0.319, stdJac 0.597, Jac<=0 0.000%
+09/28/2022 15:13:25 - train_vm_2d.py[line:192] - INFO: epoch 44, step 3510, time train 4.65, time infer 0.005, total loss 10.570, sim loss 10.251, grad loss 0.319, stdJac 0.631, Jac<=0 0.000%
+09/28/2022 15:13:33 - train_vm_2d.py[line:192] - INFO: epoch 45, step 3588, time train 4.619, time infer 0.007, total loss 10.567, sim loss 10.246, grad loss 0.321, stdJac 0.592, Jac<=0 0.000%
+09/28/2022 15:13:41 - train_vm_2d.py[line:192] - INFO: epoch 46, step 3666, time train 4.685, time infer 0.005, total loss 10.394, sim loss 10.076, grad loss 0.318, stdJac 0.600, Jac<=0 0.000%
+09/28/2022 15:13:49 - train_vm_2d.py[line:192] - INFO: epoch 47, step 3744, time train 4.641, time infer 0.004, total loss 10.409, sim loss 10.092, grad loss 0.317, stdJac 0.635, Jac<=0 0.000%
+09/28/2022 15:13:57 - train_vm_2d.py[line:192] - INFO: epoch 48, step 3822, time train 4.683, time infer 0.006, total loss 10.140, sim loss 9.822, grad loss 0.318, stdJac 0.529, Jac<=0 0.000%
+09/28/2022 15:14:05 - train_vm_2d.py[line:192] - INFO: epoch 49, step 3900, time train 4.693, time infer 0.005, total loss 9.942, sim loss 9.627, grad loss 0.315, stdJac 0.589, Jac<=0 0.000%
+09/28/2022 15:14:05 - train_vm_2d.py[line:207] - INFO: saved the model at epoch 49
+09/28/2022 15:14:13 - train_vm_2d.py[line:192] - INFO: epoch 50, step 3978, time train 4.577, time infer 0.005, total loss 10.034, sim loss 9.712, grad loss 0.321, stdJac 0.625, Jac<=0 0.000%
+09/28/2022 15:14:21 - train_vm_2d.py[line:192] - INFO: epoch 51, step 4056, time train 4.566, time infer 0.006, total loss 10.281, sim loss 9.955, grad loss 0.326, stdJac 0.641, Jac<=0 0.000%
+09/28/2022 15:14:28 - train_vm_2d.py[line:192] - INFO: epoch 52, step 4134, time train 4.571, time infer 0.006, total loss 9.805, sim loss 9.484, grad loss 0.321, stdJac 0.613, Jac<=0 0.000%
+09/28/2022 15:14:36 - train_vm_2d.py[line:192] - INFO: epoch 53, step 4212, time train 4.613, time infer 0.005, total loss 9.819, sim loss 9.495, grad loss 0.324, stdJac 0.586, Jac<=0 0.000%
+09/28/2022 15:14:44 - train_vm_2d.py[line:192] - INFO: epoch 54, step 4290, time train 4.643, time infer 0.006, total loss 9.627, sim loss 9.304, grad loss 0.323, stdJac 0.600, Jac<=0 0.000%
+09/28/2022 15:14:52 - train_vm_2d.py[line:192] - INFO: epoch 55, step 4368, time train 4.699, time infer 0.005, total loss 9.589, sim loss 9.273, grad loss 0.316, stdJac 0.639, Jac<=0 0.000%
+09/28/2022 15:15:00 - train_vm_2d.py[line:192] - INFO: epoch 56, step 4446, time train 4.567, time infer 0.005, total loss 9.516, sim loss 9.197, grad loss 0.318, stdJac 0.609, Jac<=0 0.000%
+09/28/2022 15:15:08 - train_vm_2d.py[line:192] - INFO: epoch 57, step 4524, time train 4.568, time infer 0.006, total loss 9.594, sim loss 9.277, grad loss 0.316, stdJac 0.582, Jac<=0 0.000%
+09/28/2022 15:15:16 - train_vm_2d.py[line:192] - INFO: epoch 58, step 4602, time train 4.628, time infer 0.006, total loss 9.583, sim loss 9.264, grad loss 0.319, stdJac 0.674, Jac<=0 0.000%
+09/28/2022 15:15:24 - train_vm_2d.py[line:192] - INFO: epoch 59, step 4680, time train 4.638, time infer 0.005, total loss 9.349, sim loss 9.034, grad loss 0.316, stdJac 0.619, Jac<=0 0.000%
+09/28/2022 15:15:32 - train_vm_2d.py[line:192] - INFO: epoch 60, step 4758, time train 4.581, time infer 0.007, total loss 9.191, sim loss 8.874, grad loss 0.317, stdJac 0.594, Jac<=0 0.000%
+09/28/2022 15:15:40 - train_vm_2d.py[line:192] - INFO: epoch 61, step 4836, time train 4.792, time infer 0.005, total loss 9.156, sim loss 8.839, grad loss 0.318, stdJac 0.656, Jac<=0 0.000%
+09/28/2022 15:15:48 - train_vm_2d.py[line:192] - INFO: epoch 62, step 4914, time train 4.591, time infer 0.005, total loss 9.253, sim loss 8.936, grad loss 0.318, stdJac 0.617, Jac<=0 0.000%
+09/28/2022 15:15:56 - train_vm_2d.py[line:192] - INFO: epoch 63, step 4992, time train 4.597, time infer 0.005, total loss 9.092, sim loss 8.778, grad loss 0.314, stdJac 0.577, Jac<=0 0.000%
+09/28/2022 15:16:04 - train_vm_2d.py[line:192] - INFO: epoch 64, step 5070, time train 4.586, time infer 0.006, total loss 9.195, sim loss 8.880, grad loss 0.315, stdJac 0.579, Jac<=0 0.000%
+09/28/2022 15:16:12 - train_vm_2d.py[line:192] - INFO: epoch 65, step 5148, time train 4.613, time infer 0.006, total loss 9.068, sim loss 8.754, grad loss 0.313, stdJac 0.603, Jac<=0 0.000%
+09/28/2022 15:16:20 - train_vm_2d.py[line:192] - INFO: epoch 66, step 5226, time train 4.601, time infer 0.006, total loss 9.047, sim loss 8.732, grad loss 0.315, stdJac 0.631, Jac<=0 0.000%
+09/28/2022 15:16:28 - train_vm_2d.py[line:192] - INFO: epoch 67, step 5304, time train 4.689, time infer 0.005, total loss 8.910, sim loss 8.596, grad loss 0.314, stdJac 0.602, Jac<=0 0.000%
+09/28/2022 15:16:36 - train_vm_2d.py[line:192] - INFO: epoch 68, step 5382, time train 4.617, time infer 0.005, total loss 8.937, sim loss 8.622, grad loss 0.315, stdJac 0.672, Jac<=0 0.000%
+09/28/2022 15:16:44 - train_vm_2d.py[line:192] - INFO: epoch 69, step 5460, time train 4.581, time infer 0.006, total loss 8.802, sim loss 8.492, grad loss 0.310, stdJac 0.576, Jac<=0 0.000%
+09/28/2022 15:16:52 - train_vm_2d.py[line:192] - INFO: epoch 70, step 5538, time train 4.608, time infer 0.006, total loss 8.828, sim loss 8.517, grad loss 0.311, stdJac 0.570, Jac<=0 0.000%
+09/28/2022 15:17:00 - train_vm_2d.py[line:192] - INFO: epoch 71, step 5616, time train 4.674, time infer 0.005, total loss 8.743, sim loss 8.431, grad loss 0.312, stdJac 0.590, Jac<=0 0.000%
+09/28/2022 15:17:08 - train_vm_2d.py[line:192] - INFO: epoch 72, step 5694, time train 4.658, time infer 0.006, total loss 8.603, sim loss 8.293, grad loss 0.311, stdJac 0.558, Jac<=0 0.000%
+09/28/2022 15:17:16 - train_vm_2d.py[line:192] - INFO: epoch 73, step 5772, time train 4.703, time infer 0.005, total loss 8.823, sim loss 8.507, grad loss 0.315, stdJac 0.613, Jac<=0 0.000%
+09/28/2022 15:17:24 - train_vm_2d.py[line:192] - INFO: epoch 74, step 5850, time train 4.631, time infer 0.006, total loss 8.690, sim loss 8.376, grad loss 0.314, stdJac 0.548, Jac<=0 0.000%
+09/28/2022 15:17:32 - train_vm_2d.py[line:192] - INFO: epoch 75, step 5928, time train 4.624, time infer 0.006, total loss 8.678, sim loss 8.367, grad loss 0.311, stdJac 0.619, Jac<=0 0.000%
+09/28/2022 15:17:40 - train_vm_2d.py[line:192] - INFO: epoch 76, step 6006, time train 4.608, time infer 0.006, total loss 8.494, sim loss 8.183, grad loss 0.311, stdJac 0.596, Jac<=0 0.000%
+09/28/2022 15:17:48 - train_vm_2d.py[line:192] - INFO: epoch 77, step 6084, time train 4.672, time infer 0.005, total loss 8.563, sim loss 8.249, grad loss 0.314, stdJac 0.598, Jac<=0 0.000%
+09/28/2022 15:17:56 - train_vm_2d.py[line:192] - INFO: epoch 78, step 6162, time train 4.613, time infer 0.006, total loss 8.623, sim loss 8.312, grad loss 0.312, stdJac 0.649, Jac<=0 0.000%
+09/28/2022 15:18:04 - train_vm_2d.py[line:192] - INFO: epoch 79, step 6240, time train 4.862, time infer 0.005, total loss 8.400, sim loss 8.091, grad loss 0.309, stdJac 0.595, Jac<=0 0.000%
+09/28/2022 15:18:12 - train_vm_2d.py[line:192] - INFO: epoch 80, step 6318, time train 4.653, time infer 0.005, total loss 8.328, sim loss 8.015, grad loss 0.312, stdJac 0.513, Jac<=0 0.000%
+09/28/2022 15:18:20 - train_vm_2d.py[line:192] - INFO: epoch 81, step 6396, time train 4.649, time infer 0.005, total loss 8.411, sim loss 8.102, grad loss 0.310, stdJac 0.584, Jac<=0 0.000%
+09/28/2022 15:18:28 - train_vm_2d.py[line:192] - INFO: epoch 82, step 6474, time train 4.61, time infer 0.006, total loss 8.325, sim loss 8.014, grad loss 0.312, stdJac 0.613, Jac<=0 0.000%
+09/28/2022 15:18:36 - train_vm_2d.py[line:192] - INFO: epoch 83, step 6552, time train 4.715, time infer 0.005, total loss 8.270, sim loss 7.961, grad loss 0.309, stdJac 0.637, Jac<=0 0.000%
+09/28/2022 15:18:44 - train_vm_2d.py[line:192] - INFO: epoch 84, step 6630, time train 4.565, time infer 0.006, total loss 8.216, sim loss 7.909, grad loss 0.307, stdJac 0.537, Jac<=0 0.000%
+09/28/2022 15:18:52 - train_vm_2d.py[line:192] - INFO: epoch 85, step 6708, time train 4.794, time infer 0.006, total loss 8.126, sim loss 7.820, grad loss 0.306, stdJac 0.558, Jac<=0 0.000%
+09/28/2022 15:19:01 - train_vm_2d.py[line:192] - INFO: epoch 86, step 6786, time train 4.623, time infer 0.005, total loss 8.150, sim loss 7.843, grad loss 0.307, stdJac 0.557, Jac<=0 0.000%
+09/28/2022 15:19:08 - train_vm_2d.py[line:192] - INFO: epoch 87, step 6864, time train 4.609, time infer 0.005, total loss 8.231, sim loss 7.922, grad loss 0.309, stdJac 0.559, Jac<=0 0.000%
+09/28/2022 15:19:16 - train_vm_2d.py[line:192] - INFO: epoch 88, step 6942, time train 4.584, time infer 0.005, total loss 8.022, sim loss 7.714, grad loss 0.307, stdJac 0.510, Jac<=0 0.000%
+09/28/2022 15:19:24 - train_vm_2d.py[line:192] - INFO: epoch 89, step 7020, time train 4.566, time infer 0.005, total loss 8.020, sim loss 7.712, grad loss 0.308, stdJac 0.631, Jac<=0 0.000%
+09/28/2022 15:19:32 - train_vm_2d.py[line:192] - INFO: epoch 90, step 7098, time train 4.634, time infer 0.006, total loss 8.015, sim loss 7.706, grad loss 0.309, stdJac 0.609, Jac<=0 0.000%
+09/28/2022 15:19:40 - train_vm_2d.py[line:192] - INFO: epoch 91, step 7176, time train 4.643, time infer 0.005, total loss 7.907, sim loss 7.598, grad loss 0.309, stdJac 0.573, Jac<=0 0.000%
+09/28/2022 15:19:48 - train_vm_2d.py[line:192] - INFO: epoch 92, step 7254, time train 4.625, time infer 0.005, total loss 7.927, sim loss 7.621, grad loss 0.305, stdJac 0.563, Jac<=0 0.000%
+09/28/2022 15:19:56 - train_vm_2d.py[line:192] - INFO: epoch 93, step 7332, time train 4.645, time infer 0.005, total loss 7.870, sim loss 7.566, grad loss 0.304, stdJac 0.594, Jac<=0 0.000%
+09/28/2022 15:20:04 - train_vm_2d.py[line:192] - INFO: epoch 94, step 7410, time train 4.568, time infer 0.006, total loss 7.846, sim loss 7.541, grad loss 0.305, stdJac 0.631, Jac<=0 0.000%
+09/28/2022 15:20:12 - train_vm_2d.py[line:192] - INFO: epoch 95, step 7488, time train 4.596, time infer 0.007, total loss 7.954, sim loss 7.649, grad loss 0.306, stdJac 0.608, Jac<=0 0.000%
+09/28/2022 15:20:20 - train_vm_2d.py[line:192] - INFO: epoch 96, step 7566, time train 4.542, time infer 0.005, total loss 7.763, sim loss 7.458, grad loss 0.305, stdJac 0.517, Jac<=0 0.000%
+09/28/2022 15:20:28 - train_vm_2d.py[line:192] - INFO: epoch 97, step 7644, time train 4.789, time infer 0.005, total loss 7.846, sim loss 7.542, grad loss 0.304, stdJac 0.544, Jac<=0 0.000%
+09/28/2022 15:20:36 - train_vm_2d.py[line:192] - INFO: epoch 98, step 7722, time train 4.576, time infer 0.005, total loss 8.001, sim loss 7.696, grad loss 0.306, stdJac 0.531, Jac<=0 0.000%
+09/28/2022 15:20:44 - train_vm_2d.py[line:192] - INFO: epoch 99, step 7800, time train 4.552, time infer 0.005, total loss 7.730, sim loss 7.424, grad loss 0.306, stdJac 0.564, Jac<=0 0.000%
+09/28/2022 15:20:44 - train_vm_2d.py[line:207] - INFO: saved the model at epoch 99
+09/28/2022 15:20:51 - train_vm_2d.py[line:192] - INFO: epoch 100, step 7878, time train 4.548, time infer 0.005, total loss 7.859, sim loss 7.555, grad loss 0.304, stdJac 0.552, Jac<=0 0.000%
+09/28/2022 15:20:59 - train_vm_2d.py[line:192] - INFO: epoch 101, step 7956, time train 4.564, time infer 0.005, total loss 7.791, sim loss 7.484, grad loss 0.308, stdJac 0.489, Jac<=0 0.000%
+09/28/2022 15:21:07 - train_vm_2d.py[line:192] - INFO: epoch 102, step 8034, time train 4.592, time infer 0.006, total loss 7.683, sim loss 7.379, grad loss 0.304, stdJac 0.582, Jac<=0 0.000%
+09/28/2022 15:21:15 - train_vm_2d.py[line:192] - INFO: epoch 103, step 8112, time train 4.691, time infer 0.006, total loss 7.698, sim loss 7.394, grad loss 0.305, stdJac 0.588, Jac<=0 0.000%
+09/28/2022 15:21:23 - train_vm_2d.py[line:192] - INFO: epoch 104, step 8190, time train 4.942, time infer 0.005, total loss 7.730, sim loss 7.421, grad loss 0.309, stdJac 0.534, Jac<=0 0.000%
+09/28/2022 15:21:32 - train_vm_2d.py[line:192] - INFO: epoch 105, step 8268, time train 4.797, time infer 0.005, total loss 7.572, sim loss 7.271, grad loss 0.300, stdJac 0.519, Jac<=0 0.024%
+09/28/2022 15:21:40 - train_vm_2d.py[line:192] - INFO: epoch 106, step 8346, time train 4.652, time infer 0.005, total loss 7.465, sim loss 7.165, grad loss 0.299, stdJac 0.580, Jac<=0 0.000%
+09/28/2022 15:21:48 - train_vm_2d.py[line:192] - INFO: epoch 107, step 8424, time train 4.647, time infer 0.006, total loss 7.454, sim loss 7.152, grad loss 0.302, stdJac 0.585, Jac<=0 0.000%
+09/28/2022 15:21:56 - train_vm_2d.py[line:192] - INFO: epoch 108, step 8502, time train 4.551, time infer 0.006, total loss 7.519, sim loss 7.216, grad loss 0.303, stdJac 0.546, Jac<=0 0.000%
+09/28/2022 15:22:04 - train_vm_2d.py[line:192] - INFO: epoch 109, step 8580, time train 4.702, time infer 0.005, total loss 7.553, sim loss 7.251, grad loss 0.302, stdJac 0.595, Jac<=0 0.000%
+09/28/2022 15:22:12 - train_vm_2d.py[line:192] - INFO: epoch 110, step 8658, time train 4.664, time infer 0.006, total loss 7.460, sim loss 7.155, grad loss 0.305, stdJac 0.572, Jac<=0 0.000%
+09/28/2022 15:22:20 - train_vm_2d.py[line:192] - INFO: epoch 111, step 8736, time train 4.699, time infer 0.007, total loss 7.475, sim loss 7.176, grad loss 0.299, stdJac 0.563, Jac<=0 0.000%
+09/28/2022 15:22:28 - train_vm_2d.py[line:192] - INFO: epoch 112, step 8814, time train 4.639, time infer 0.005, total loss 7.492, sim loss 7.187, grad loss 0.305, stdJac 0.494, Jac<=0 0.000%
+09/28/2022 15:22:36 - train_vm_2d.py[line:192] - INFO: epoch 113, step 8892, time train 4.623, time infer 0.005, total loss 7.607, sim loss 7.302, grad loss 0.305, stdJac 0.633, Jac<=0 0.000%
+09/28/2022 15:22:44 - train_vm_2d.py[line:192] - INFO: epoch 114, step 8970, time train 4.597, time infer 0.006, total loss 7.413, sim loss 7.110, grad loss 0.303, stdJac 0.625, Jac<=0 0.000%
+09/28/2022 15:22:52 - train_vm_2d.py[line:192] - INFO: epoch 115, step 9048, time train 4.757, time infer 0.006, total loss 7.323, sim loss 7.021, grad loss 0.303, stdJac 0.632, Jac<=0 0.000%
+09/28/2022 15:23:00 - train_vm_2d.py[line:192] - INFO: epoch 116, step 9126, time train 4.799, time infer 0.006, total loss 7.345, sim loss 7.040, grad loss 0.305, stdJac 0.601, Jac<=0 0.000%
+09/28/2022 15:23:08 - train_vm_2d.py[line:192] - INFO: epoch 117, step 9204, time train 4.648, time infer 0.006, total loss 7.253, sim loss 6.952, grad loss 0.300, stdJac 0.557, Jac<=0 0.000%
+09/28/2022 15:23:17 - train_vm_2d.py[line:192] - INFO: epoch 118, step 9282, time train 4.647, time infer 0.006, total loss 7.299, sim loss 6.997, grad loss 0.301, stdJac 0.580, Jac<=0 0.000%
+09/28/2022 15:23:25 - train_vm_2d.py[line:192] - INFO: epoch 119, step 9360, time train 4.621, time infer 0.005, total loss 7.235, sim loss 6.934, grad loss 0.301, stdJac 0.599, Jac<=0 0.000%
+09/28/2022 15:23:32 - train_vm_2d.py[line:192] - INFO: epoch 120, step 9438, time train 4.582, time infer 0.005, total loss 7.229, sim loss 6.926, grad loss 0.302, stdJac 0.547, Jac<=0 0.000%
+09/28/2022 15:23:41 - train_vm_2d.py[line:192] - INFO: epoch 121, step 9516, time train 4.787, time infer 0.005, total loss 7.142, sim loss 6.842, grad loss 0.300, stdJac 0.649, Jac<=0 0.000%
+09/28/2022 15:23:49 - train_vm_2d.py[line:192] - INFO: epoch 122, step 9594, time train 4.687, time infer 0.005, total loss 7.200, sim loss 6.897, grad loss 0.303, stdJac 0.583, Jac<=0 0.000%
+09/28/2022 15:23:57 - train_vm_2d.py[line:192] - INFO: epoch 123, step 9672, time train 4.72, time infer 0.005, total loss 7.196, sim loss 6.894, grad loss 0.302, stdJac 0.558, Jac<=0 0.024%
+09/28/2022 15:24:05 - train_vm_2d.py[line:192] - INFO: epoch 124, step 9750, time train 4.596, time infer 0.006, total loss 7.111, sim loss 6.809, grad loss 0.303, stdJac 0.594, Jac<=0 0.000%
+09/28/2022 15:24:13 - train_vm_2d.py[line:192] - INFO: epoch 125, step 9828, time train 4.599, time infer 0.005, total loss 7.013, sim loss 6.715, grad loss 0.298, stdJac 0.565, Jac<=0 0.000%
+09/28/2022 15:24:21 - train_vm_2d.py[line:192] - INFO: epoch 126, step 9906, time train 4.579, time infer 0.006, total loss 7.145, sim loss 6.842, grad loss 0.302, stdJac 0.538, Jac<=0 0.000%
+09/28/2022 15:24:29 - train_vm_2d.py[line:192] - INFO: epoch 127, step 9984, time train 4.79, time infer 0.005, total loss 7.119, sim loss 6.819, grad loss 0.300, stdJac 0.545, Jac<=0 0.000%
+09/28/2022 15:24:37 - train_vm_2d.py[line:192] - INFO: epoch 128, step 10062, time train 4.847, time infer 0.005, total loss 7.053, sim loss 6.750, grad loss 0.303, stdJac 0.569, Jac<=0 0.000%
+09/28/2022 15:24:45 - train_vm_2d.py[line:192] - INFO: epoch 129, step 10140, time train 4.713, time infer 0.005, total loss 7.060, sim loss 6.762, grad loss 0.298, stdJac 0.606, Jac<=0 0.000%
+09/28/2022 15:24:53 - train_vm_2d.py[line:192] - INFO: epoch 130, step 10218, time train 4.67, time infer 0.006, total loss 6.987, sim loss 6.688, grad loss 0.299, stdJac 0.522, Jac<=0 0.000%
+09/28/2022 15:25:01 - train_vm_2d.py[line:192] - INFO: epoch 131, step 10296, time train 4.737, time infer 0.005, total loss 6.898, sim loss 6.600, grad loss 0.298, stdJac 0.516, Jac<=0 0.000%
+09/28/2022 15:25:09 - train_vm_2d.py[line:192] - INFO: epoch 132, step 10374, time train 4.7, time infer 0.006, total loss 6.896, sim loss 6.599, grad loss 0.297, stdJac 0.550, Jac<=0 0.000%
+09/28/2022 15:25:18 - train_vm_2d.py[line:192] - INFO: epoch 133, step 10452, time train 4.739, time infer 0.006, total loss 6.927, sim loss 6.628, grad loss 0.298, stdJac 0.606, Jac<=0 0.000%
+09/28/2022 15:25:25 - train_vm_2d.py[line:192] - INFO: epoch 134, step 10530, time train 4.586, time infer 0.005, total loss 6.846, sim loss 6.547, grad loss 0.299, stdJac 0.578, Jac<=0 0.000%
+09/28/2022 15:25:34 - train_vm_2d.py[line:192] - INFO: epoch 135, step 10608, time train 4.68, time infer 0.005, total loss 6.889, sim loss 6.594, grad loss 0.296, stdJac 0.585, Jac<=0 0.000%
+09/28/2022 15:25:42 - train_vm_2d.py[line:192] - INFO: epoch 136, step 10686, time train 4.665, time infer 0.005, total loss 6.881, sim loss 6.584, grad loss 0.298, stdJac 0.509, Jac<=0 0.000%
+09/28/2022 15:25:50 - train_vm_2d.py[line:192] - INFO: epoch 137, step 10764, time train 4.696, time infer 0.005, total loss 6.806, sim loss 6.505, grad loss 0.301, stdJac 0.515, Jac<=0 0.000%

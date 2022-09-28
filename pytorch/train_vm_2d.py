@@ -9,10 +9,13 @@ import torch
 import torch.nn as nn
 from torch import optim
 
-from utils import get_logger, countParam, LinearWarmupCosineAnnealingLR, ImgTransform
-from datasets import mnist
+from utils import get_logger, countParam, LinearWarmupCosineAnnealingLR, ImgTransform, setup_seed
+from utils.metrics import jacobian_determinant
 from utils.losses import gradient_loss, NCCLoss
+from datasets import mnist
 from models import VxmDense, SpatialTransformer
+
+setup_seed()
 
 
 def main():
@@ -150,6 +153,7 @@ def main():
 
         if epoch % args.val_interval == 0:
             reg_net.eval()
+            Jac_std, Jac_neg = [], []
 
             for val_idx, (moving_img, fixed_img) in enumerate(val_loader):
                 if val_idx > 1: break  # 只查看2个batch
@@ -160,6 +164,11 @@ def main():
 
                 with torch.no_grad():
                     moved_img, flow_field = reg_net(moving_img, fixed_img)
+
+                    for i in range(flow_field.shape[0]):
+                        jacdet = jacobian_determinant(flow_field[i].permute(1, 2, 0).cpu())
+                        Jac_std.append(jacdet.std())
+                        Jac_neg.append(100 * ((jacdet <= 0.).sum() / jacdet.size))
 
                 time_i = time.time() - t0
 
@@ -185,7 +194,8 @@ def main():
             logger.info(
                 f"epoch {epoch}, step {steps}, time train {round(time_t, 3)}, time infer {round(time_i, 3)}, "
                 f"total loss {run_loss[epoch, 0] :.3f}, sim loss {run_loss[epoch, 1] :.3f}, "
-                f"grad loss {run_loss[epoch, 2] :.3f}")
+                f"grad loss {run_loss[epoch, 2] :.3f}, "
+                f"stdJac {np.mean(Jac_std) :.3f}, Jac<=0 {np.mean(Jac_neg) :.5f}%")
 
             if args.is_visdom:
                 # loss line

@@ -75,54 +75,48 @@ def Get_Jac(displacement):
     return D
 
 
-# compute jacobian determinant as measure of deformation complexity
-def jacobian_determinant_3d(dense_flow):
-    B, _, H, W, D = dense_flow.size()
+def jacobian_determinant(disp):
+    """
+    jacobian determinant of a displacement field. From VoxelMorph
+    NB: to compute the spatial gradients, we use np.gradient.
+    Parameters:
+        disp: 2D or 3D displacement field of size [*vol_shape, nb_dims],
+              where vol_shape is of len nb_dims
+    Returns:
+        jacobian determinant (scalar)
+    """
+    if len(disp.shape) not in [3, 4]:
+        raise ValueError(f"shape of 2D folw field needs to be [H, W, C]，"
+                         f"shape of 3D folw field needs to be [H, W, D, C], but got {disp.shape}")
+    # check inputs
+    volshape = disp.shape[:-1]
+    nb_dims = len(volshape)
+    assert len(volshape) in (2, 3), 'flow has to be 2D or 3D'
 
-    dense_pix = dense_flow * (torch.Tensor([H - 1, W - 1, D - 1]) / 2).view(1, 3, 1, 1, 1).to(dense_flow.device)
-    gradz = nn.Conv3d(3, 3, (3, 1, 1), padding=(1, 0, 0), bias=False, groups=3)
-    gradz.weight.data[:, 0, :, 0, 0] = torch.tensor([-0.5, 0, 0.5]).view(1, 3).repeat(3, 1)
-    gradz.to(dense_flow.device)
-    grady = nn.Conv3d(3, 3, (1, 3, 1), padding=(0, 1, 0), bias=False, groups=3)
-    grady.weight.data[:, 0, 0, :, 0] = torch.tensor([-0.5, 0, 0.5]).view(1, 3).repeat(3, 1)
-    grady.to(dense_flow.device)
-    gradx = nn.Conv3d(3, 3, (1, 1, 3), padding=(0, 0, 1), bias=False, groups=3)
-    gradx.weight.data[:, 0, 0, 0, :] = torch.tensor([-0.5, 0, 0.5]).view(1, 3).repeat(3, 1)
-    gradx.to(dense_flow.device)
-    with torch.no_grad():
-        jacobian = torch.cat((gradz(dense_pix), grady(dense_pix), gradx(dense_pix)), 0) + \
-                   torch.eye(3, 3).view(3, 3, 1, 1, 1).to(dense_flow.device)
-        jacobian = jacobian[:, :, 2:-2, 2:-2, 2:-2]
-        jac_det = jacobian[0, 0, :, :, :] * (jacobian[1, 1, :, :, :] * jacobian[2, 2, :, :, :] -
-                                             jacobian[1, 2, :, :, :] * jacobian[2, 1, :, :, :]) - \
-                  jacobian[1, 0, :, :, :] * (jacobian[0, 1, :, :, :] * jacobian[2, 2, :, :, :] -
-                                             jacobian[0, 2, :, :, :] * jacobian[2, 1, :, :, :]) + \
-                  jacobian[2, 0, :, :, :] * (jacobian[0, 1, :, :, :] * jacobian[1, 2, :, :, :] -
-                                             jacobian[0, 2, :, :, :] * jacobian[1, 1, :, :, :])
+    # compute grid
+    grid_lst = [np.arange(e) for e in volshape]
+    grid_lst = np.meshgrid(*grid_lst, indexing='ij')
+    grid = np.stack(grid_lst, len(volshape))
 
-    return jac_det
+    # compute gradients
+    J = np.gradient(disp + grid)
 
+    # 3D glow
+    if nb_dims == 3:
+        dx = J[0]
+        dy = J[1]
+        dz = J[2]
 
-if __name__ == '__main__':
-    from datasets import CT2MRDataset
-    from torch.utils.data import DataLoader
+        # compute jacobian components
+        Jdet0 = dx[..., 0] * (dy[..., 1] * dz[..., 2] - dy[..., 2] * dz[..., 1])
+        Jdet1 = dx[..., 1] * (dy[..., 0] * dz[..., 2] - dy[..., 2] * dz[..., 0])
+        Jdet2 = dx[..., 2] * (dy[..., 0] * dz[..., 1] - dy[..., 1] * dz[..., 0])
 
-    ct2mr_dataset = CT2MRDataset(
-        CT_folder=r"F:\shb_src\from_github\datasets\MICCAI2021\task1_preprocessed_by_shb\auxiliary\L2R_Task1_CT",
-        CT_name=r"?_bcv_CT.nii.gz",
-        MR_folder=r"F:\shb_src\from_github\datasets\MICCAI2021\task1_preprocessed_by_shb\auxiliary\L2R_Task1_MR",
-        MR_name=r"?_chaos_MR.nii.gz",
-        pair_numbers=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-        for_inf=True
-    )
+        return Jdet0 - Jdet1 + Jdet2
 
-    my_dataloader = DataLoader(dataset=ct2mr_dataset, batch_size=1, num_workers=2)
-    dice_all_val = np.zeros((len(ct2mr_dataset), 5 - 1))
-    for idx, (CTimgs, CTsegs, MRimgs, MRsegs, CTaffines, MRaffines) in enumerate(my_dataloader):
-        dice_all_val[idx] = dice_coeff(MRsegs, CTsegs)
-    all_val_dice_avgs = dice_all_val.mean(axis=0)
-    mean_all_dice = all_val_dice_avgs.mean()
-    np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
-    print(f"dice_all_val: {dice_all_val}, \n "
-          f"all_val_dice_avgs: {all_val_dice_avgs}, \n "
-          f"mean_all_dice: {mean_all_dice}")
+    else:  # must be 2
+
+        dfdx = J[0]
+        dfdy = J[1]
+
+        return dfdx[..., 0] * dfdy[..., 1] - dfdy[..., 0] * dfdx[..., 1]

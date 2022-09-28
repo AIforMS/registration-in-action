@@ -1,7 +1,6 @@
 from __future__ import print_function
 import numpy as np
 import torch
-import torch.nn.functional as F
 import time
 import os
 import pathlib
@@ -12,10 +11,12 @@ import argparse
 
 cuda_idx = 0
 
-from utils import get_logger, countParam
-from utils.metrics import dice_coeff
+from utils import get_logger, setup_seed
+from utils.metrics import dice_coeff, Get_Jac
 from datasets import lpba
-from models import VxmDense, SpatialTransformer
+from models import VxmDense
+
+setup_seed()
 
 
 def main():
@@ -119,9 +120,14 @@ def main():
         logger.info(f"warped scan number {save_name} save to {d_options['output']}")
 
         dice = dice_coeff(moved_seg.long().cpu(), fixed_label.cpu())
+
+        jacdet = Get_Jac(flow_field.permute(0, 2, 3, 4, 1)).cpu().numpy()
+        Jac_std = jacdet.std()
+        Jac_neg = 100 * ((jacdet <= 0.).sum() / jacdet.size)
+
         np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
-        logger.info('Dice validation:', dice, 'Avg.', '%0.3f' % (dice.mean()),
-                    'Std.', dice.std(), 'time:', np.mean(total_time))
+        logger.info(f"Dice validation: {dice}, Avg.: {dice.mean(), :.3f}, Std.: {dice.std(), :.3f}, "
+                    f"time: {np.mean(total_time), :.3f}, stdJac {Jac_std :.3f}, Jac<=0 {Jac_neg :.5f}%")
 
     if os.path.isfile(d_options['input']):
         moving_img = torch.from_numpy(nib.load(d_options['input']).get_fdata()).unsqueeze(0).unsqueeze(0)

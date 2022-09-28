@@ -142,7 +142,7 @@ def mnist(root=data_root,
     :return: data_loader: moving_img, fixed_img
     """
     mnist_dataset = MNISTDataset(root=root, for_what=for_what, choose_label=choose_label, val_size=val_size)
-    data_loader = DataLoader(mnist_dataset, batch_size=batch_size, num_workers=num_workers)
+    data_loader = DataLoader(mnist_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 
     return data_loader
 

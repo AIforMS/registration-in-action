@@ -40,6 +40,12 @@ def get_logger(output, name='train', log_level=1):
 
 
 def setup_seed(seed=3407):
+    """
+    Torch.manual_seed(3407) is all you need. refer to: https://arxiv.org/abs/2109.08203
+
+    :param seed: 3407
+    :return: None
+    """
     os.environ['PYTHONHASHSEED'] = str(seed)
 
     torch.manual_seed(seed)
