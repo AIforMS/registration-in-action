@@ -10,10 +10,9 @@ import torch.nn as nn
 from torch import optim
 
 from utils import get_logger, countParam, LinearWarmupCosineAnnealingLR, ImgTransform, setup_seed
-from utils.metrics import jacobian_determinant
-from utils.losses import gradient_loss, NCCLoss
+from utils.losses import NCCLoss
 from datasets import mnist
-from models import VxmDense
+from models import VxmAffineNet
 
 setup_seed()
 
@@ -24,7 +23,7 @@ def main():
 
     # dataset args
     parser.add_argument("-output", help="filename (without extension) for output",
-                        default="output/mnist/")
+                        default="output/mnist-affine/")
     parser.add_argument("-val_size", help="validation set size, which is divided from the training set",
                         type=int, default=512)
     parser.add_argument("-choose_label", help="Which number to choose for registration training",
@@ -79,7 +78,7 @@ def main():
     # initialise trainable network parts
     enc_nf = [16, 32, 32, 32]
     dec_nf = [32, 32, 32, 32, 32, 16, 16]
-    reg_net = VxmDense(
+    reg_net = VxmAffineNet(
         inshape=[32, 32],
         nb_unet_features=[enc_nf, dec_nf])
     reg_net.to(device)
@@ -107,7 +106,6 @@ def main():
     elif args.sim_loss == "NCC":
         sim_criterion = NCCLoss()
         args.alpha = 1.5
-    grad_criterion = gradient_loss
 
     steps, best_acc = 0, 0
     run_loss = np.zeros([end_epoch, 3])
@@ -129,15 +127,13 @@ def main():
 
             moving_img, fixed_img = moving_img.to(device), fixed_img.to(device)
 
-            moved_imgs, flow_field = reg_net(moving_img, fixed_img)
+            moved_imgs, affine_mat = reg_net(moving_img, fixed_img)
 
             sim_loss = sim_criterion(moved_imgs, fixed_img)
-            grad_loss = grad_criterion(flow_field)
-            total_loss = args.sim_weight * sim_loss + args.alpha * grad_loss
+            total_loss = args.sim_weight * sim_loss
 
             run_loss[epoch, 0] += total_loss.item()
             run_loss[epoch, 1] += args.sim_weight * sim_loss.item()
-            run_loss[epoch, 2] += args.alpha * grad_loss.item()
 
             total_loss.backward()
 
@@ -150,7 +146,6 @@ def main():
 
         if epoch % args.val_interval == 0:
             reg_net.eval()
-            Jac_std, Jac_neg = [], []
 
             for val_idx, (moving_img, fixed_img) in enumerate(val_loader):
                 if val_idx > 1: break  # 只查看2个batch
@@ -160,12 +155,7 @@ def main():
                 t0 = time.time()
 
                 with torch.no_grad():
-                    moved_img, flow_field = reg_net(moving_img, fixed_img)
-
-                    for i in range(flow_field.shape[0]):
-                        jacdet = jacobian_determinant(flow_field[i].permute(1, 2, 0).cpu())
-                        Jac_std.append(jacdet.std())
-                        Jac_neg.append(100 * ((jacdet <= 0.).sum() / jacdet.size))
+                    moved_img, affine_mat = reg_net(moving_img, fixed_img)
 
                 time_i = time.time() - t0
 
@@ -190,9 +180,7 @@ def main():
             np.set_printoptions(formatter={'float': '{: 0.3f}'.format})
             logger.info(
                 f"epoch {epoch}, step {steps}, time train {round(time_t, 3)}, time infer {round(time_i, 3)}, "
-                f"total loss {run_loss[epoch, 0] :.3f}, sim loss {run_loss[epoch, 1] :.3f}, "
-                f"grad loss {run_loss[epoch, 2] :.3f}, "
-                f"stdJac {np.mean(Jac_std) :.3f}, Jac<=0 {np.mean(Jac_neg) :.5f}%")
+                f"total loss {run_loss[epoch, 0] :.3f}, sim loss {run_loss[epoch, 1] :.3f}")
 
             if args.is_visdom:
                 # loss line
