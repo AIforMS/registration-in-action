@@ -7,12 +7,14 @@ import glob
 import logging
 import argparse
 
-import ants  # 只能在 linux 上使用
+import ants
+import torch
 import numpy as np
 import nibabel as nib
 
 from utils import get_logger
-from utils.metrics import dice_coeff, Get_Jac
+from utils.metrics import dice_coeff, Get_Jac, jacobian_determinant
+
 
 parser = argparse.ArgumentParser()
 
@@ -26,8 +28,8 @@ parser.add_argument("-mov_numbers", dest="mov_numbers",
                     help="list of integers indicating which scans to use, i.e. \"1 2 3\" ",
                     default="2 12 17 29",
                     type=lambda s: [n for n in s.split()])
-parser.add_argument("-fix_number", dest="fix_numbers", type=str,
-                    help="An integer indicating which scans to use",
+parser.add_argument("-fix_numbers", dest="fix_numbers", type=str,
+                    help="list of integers indicating which scans to use, i.e. \"1 2 3\" ",
                     default=1)
 parser.add_argument("-img_name", dest="img_name",
                     help="prototype scan filename i.e. pancreas_ct?.nii.gz",
@@ -37,14 +39,13 @@ parser.add_argument("-label_name", dest="label_name", help="prototype segmentati
 parser.add_argument("-trans_typ", dest="trans_typ", help="filename (without extension) for output",
                     default="SyN")
 parser.add_argument("-output", dest="output", help="filename (without extension) for output",
-                    default="output/ANTs_SyN")
+                    default="./Result/ANTs_SyN")
 
 args = parser.parse_args()
 
 if not os.path.exists(args.output):
     # os.makedirs(out_dir, exist_ok=True)
     pathlib.Path(args.output).mkdir(parents=True, exist_ok=True)
-
 
 def get_img_lst(img_path):
     if isinstance(img_path, str):
@@ -59,7 +60,6 @@ def get_img_lst(img_path):
     else:
         raise ValueError(f'unknown filetype for {img_path}')
     return img_lst
-
 
 def save_image(img, ref_img, name, result_dir):
     # 将配准后图像的direction/origin/spacing和原图保持一致
@@ -102,7 +102,8 @@ def ants_reg(mov_img_p,
     # 指标保存
     num_labels = 55 if dataset.lower() == 'lpba' else 9
     dice_all_val = np.zeros((len(mov_img_lst), num_labels - 1))
-    Jac_std, Jac_neg = [], []
+    Jac_std1, Jac_neg1 = [], []
+    Jac_std2, Jac_neg2 = [], []
 
     for idx, (mov_img, mov_label) in enumerate(zip(mov_img_lst, mov_label_lst)):
         img_name = re.findall(r'\d+', os.path.split(mov_img)[-1])[0]
@@ -111,6 +112,12 @@ def ants_reg(mov_img_p,
 
         m_img = ants.image_read(mov_img)
         m_label = ants.image_read(mov_label)
+
+        # 计算初始指标
+        dice_one_val = dice_coeff(f_label.numpy(single_components=False), m_label.numpy(single_components=False),
+                                  logger=logger)
+        np.set_printoptions(precision=3, suppress=True)
+        logger.info(f"{save_name} initial DSC: dice list {dice_one_val}, DSC {dice_one_val.mean()}")
 
         '''
         ants.registration()函数的返回值是一个字典:
@@ -123,6 +130,10 @@ def ants_reg(mov_img_p,
         # 图像配准
         mytx = ants.registration(fixed=f_img, moving=m_img, type_of_transform=trans_typ)
         time_o = time.time() - t0
+
+        flow_field = nib.load(mytx['fwdtransforms'][0]).get_fdata().transpose(3, 0, 1, 2, 4)  # shape(batch, H, W, D, channel)
+
+        logger.info(f"flow_filed shape: {flow_field.shape}")
 
         warped_img = mytx["warpedmovout"]  # mytx["warpedmovout"] 为配准后的 moving img
         # 对moving图像对应的label图进行配准,interpolator也可以选择"nearestNeighbor"等
@@ -141,23 +152,26 @@ def ants_reg(mov_img_p,
         np.set_printoptions(precision=3, suppress=True)
         logger.info(f"{save_name} : dice list {dice_one_val}, DSC {dice_one_val.mean()}")
 
-        Jac = Get_Jac(nib.load(mytx['fwdtransforms'][0]).get_fdata()[np.newaxis])
-        Jac_std.append(Jac.std())
-        Jac_neg.append(100 * ((Jac <= 0.).sum() / Jac.numel()))
+        Jac = torch.from_numpy(jacobian_determinant(flow_field[0]))  # no needs batch dim
+        Jac_std1.append(Jac.std())
+        Jac_neg1.append(100 * ((Jac <= 0.).sum() / Jac.numel()))
+
+        Jac = Get_Jac(flow_field)
+        Jac_std2.append(Jac.std())
+        Jac_neg2.append(100 * ((Jac <= 0.).sum() / Jac.numel()))
 
         logger.info(
             f"time infer {round(time_o, 3)}, "
-            f"stdJac {np.mean(Jac_std) :.3f}, Jac<=0 {np.mean(Jac_neg) :.3f}%,")
+            f"jacobian_determinant: stdJac {np.mean(Jac_std1) :.3f}, Jac<=0 {np.mean(Jac_neg1) :.3f}%, "
+            f"Get_Jac: stdJac {np.mean(Jac_std2) :.3f}, Jac<=0 {np.mean(Jac_neg2) :.3f}%")
 
         # 将antsimage转化为numpy数组
         warped_img_arr = warped_img.numpy(single_components=False)
         # 从numpy数组得到antsimage
-        img = ants.from_numpy(warped_img_arr, origin=None, spacing=None, direction=None, has_components=False,
-                              is_rgb=False)
+        img = ants.from_numpy(warped_img_arr, origin=None, spacing=None, direction=None, has_components=False, is_rgb=False)
 
         # 生成图像的雅克比行列式
-        jac = ants.create_jacobian_determinant_image(domain_image=f_img, tx=mytx["fwdtransforms"][0], do_log=False,
-                                                     geom=False)
+        jac = ants.create_jacobian_determinant_image(domain_image=f_img, tx=mytx["fwdtransforms"][0], do_log=False, geom=False)
         ants.image_write(jac, os.path.join(result_dir, f"{save_name}_ants_jac.nii.gz"))
 
         # 生成带网格的moving图像,可以用于可视化变形场,实测效果不好（为什么要两次 create_grid？）
@@ -181,6 +195,7 @@ def ants_reg(mov_img_p,
 
 
 if __name__ == "__main__":
+
     # 固定图像为一个文件路径，不是列表
     fix_img_p = os.path.join(args.img_folder, args.img_name.replace('?', args.fix_numbers))
     fix_label_p = os.path.join(args.label_folder, args.label_name.replace('?', args.fix_numbers))

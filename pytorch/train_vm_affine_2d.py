@@ -12,7 +12,7 @@ from torch import optim
 from utils import get_logger, countParam, LinearWarmupCosineAnnealingLR, ImgTransform, setup_seed
 from utils.losses import NCCLoss
 from datasets import mnist
-from models import VxmAffineNet
+from models import VxmAffineNet, VxmAffineNet_regress
 
 setup_seed()
 
@@ -31,6 +31,7 @@ def main():
 
     # training args
     parser.add_argument("-batch_size", help="Dataloader batch size", type=int, default=64)
+    parser.add_argument("-choose_optim", help="Choose optimizer", type=str, choices=['Adam', 'AdamW'], default='Adam')
     parser.add_argument("-lr", help="Optimizer learning rate, keep pace with batch_size",
                         type=float, default=1e-4)  # 0.005 for AdamW, 4e-4 for Adam
     parser.add_argument("-apply_lr_scheduler", help="Need lr scheduler or not", action="store_true")
@@ -42,10 +43,12 @@ def main():
     parser.add_argument("-val_interval", help="validation and saving interval", type=int, default=1)
     parser.add_argument("-save_interval", help="validation and saving interval", type=int, default=50)
     parser.add_argument("-is_visdom", help="Using Visdom to visualize Training process",
-                        type=lambda s: False if s == "False" else True, default=False)
+                        type=lambda s: False if s == "False" else True, default=True)
     parser.add_argument("-num_workers", help="Dataloader num_workers", type=int, default=2)
 
     # losses args
+    parser.add_argument("-gap_size", type=int, help="you know", choices=[1, 2, 4, 6], default=4)
+    parser.add_argument("-use_gap", type=lambda s: False if s == "False" else True, default=False)
     parser.add_argument("-sim_loss", type=str, help="similarity criterion", choices=['MSE', 'NCC'],
                         default='MSE')
     parser.add_argument("-alpha", type=float, help="weight for regularization loss",
@@ -78,12 +81,14 @@ def main():
     # initialise trainable network parts
     enc_nf = [16, 32, 32, 32]
     dec_nf = [32, 32, 32, 32, 32, 16, 16]
-    reg_net = VxmAffineNet(
+    reg_net = VxmAffineNet_regress(
         inshape=[32, 32],
-        nb_unet_features=[enc_nf, dec_nf])
+        nb_unet_features=[enc_nf, dec_nf],
+        gap_size=args.gap_size,
+        use_gap=args.use_gap)
     reg_net.to(device)
 
-    logger.info(f'VM reg_net params: {countParam(reg_net)}')
+    logger.info(f'VM reg_net params: {countParam(reg_net)}, training with {args.choose_optim} with lr of {args.lr}')
 
     if args.resume:
         reg_net = reg_net.load(args.resume, device=device).to(device)
@@ -92,7 +97,7 @@ def main():
     reg_net.train()
 
     # train using Adam with weight decay and exponential LR decay
-    optimizer = optim.Adam(reg_net.parameters(), lr=args.lr)
+    optimizer = getattr(optim, args.choose_optim)(reg_net.parameters(), lr=args.lr)
     # scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.999) if args.apply_lr_scheduler else None
     if args.apply_lr_scheduler:
         scheduler = LinearWarmupCosineAnnealingLR(optimizer,
@@ -190,7 +195,17 @@ def main():
 
             if (epoch + 1) % args.save_interval == 0:
                 np.save(f"{args.output}run_loss.npy", run_loss)
-                reg_net.save(args.output + f"reg_net_label{args.choose_label}_epoch{epoch}.pth")
+
+                state_dict = {
+                    "state_dict": reg_net.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "scheduler": scheduler.state_dict() if args.apply_lr_scheduler else None,
+                    "best_acc": best_acc,
+                    "epoch": epoch,
+                    "steps": steps
+                }
+
+                torch.save(state_dict, args.output + f"reg_net_label{args.choose_label}_epoch{epoch}.pth")
                 logger.info(f"saved the model at epoch {epoch}")
 
             reg_net.train()

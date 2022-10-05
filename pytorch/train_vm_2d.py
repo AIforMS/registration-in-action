@@ -43,7 +43,7 @@ def main():
     parser.add_argument("-val_interval", help="validation and saving interval", type=int, default=1)
     parser.add_argument("-save_interval", help="validation and saving interval", type=int, default=50)
     parser.add_argument("-is_visdom", help="Using Visdom to visualize Training process",
-                        type=lambda s: False if s == "False" else True, default=False)
+                        type=lambda s: False if s == "False" else True, default=True)
     parser.add_argument("-num_workers", help="Dataloader num_workers", type=int, default=2)
 
     # losses args

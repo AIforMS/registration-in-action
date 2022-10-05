@@ -109,6 +109,21 @@ class Mlp(nn.Module):
         return x
 
 
+class NiNGAP(nn.Module):
+    def __init__(self, ndims, in_channels, out_channels=1, out_shape=[2, 3]):
+        super().__init__()
+        self.convNiN1 = getattr(nn, f"Conv{ndims}d")(in_channels, in_channels // 2, kernel_size=3, padding=1)
+        self.convNiN2 = getattr(nn, f"Conv{ndims}d")(in_channels // 2, out_channels, kernel_size=3, padding=1)
+        self.pool = getattr(nn, f"MaxPool{ndims}d")(2)
+        self.act = nn.ReLU(True)
+        self.Gap = getattr(nn, f"AdaptiveAvgPool{ndims}d")(output_size=out_shape)
+
+    def forward(self, x):
+        x = self.act(self.pool(self.convNiN1(x)))
+        x = self.act(self.pool(self.convNiN2(x)))
+        return self.Gap(x).squeeze()
+
+
 class VxmAffineNet(nn.Module):
     def __init__(self,
                  inshape,
@@ -119,7 +134,9 @@ class VxmAffineNet(nn.Module):
                  src_feats=1,
                  trg_feats=1,
                  unet_half_res=False,
-                 norm_layer=nn.LayerNorm,):
+                 norm_layer=nn.LayerNorm,
+                 gap_size=4,
+                 use_gap=True):
         """
         :param inshape: Input shape. e.g. (192, 192, 192)
         :param nb_unet_features: Unet convolutional features. Can be specified via a list of lists with
@@ -140,10 +157,20 @@ class VxmAffineNet(nn.Module):
         self.ndims = len(inshape)
         assert self.ndims in [2, 3], 'Only support 2D and 3D, ndims should be one of 2 or 3. found: %d' % self.ndims
 
+        self.gap_size = gap_size
+        self.use_gap = use_gap
+
         if self.ndims == 2:
-            out_shear_channels = 2
+            out_affine_channels = 2 * 3
+            self.out_shape = [2, 3]
+            self.id_affine = torch.tensor([1, 0, 0,
+                                           0, 1, 0], dtype=torch.float, device='cuda')
         elif self.ndims == 3:
-            out_shear_channels = 6
+            out_affine_channels = 3 * 4
+            self.out_shape = [1, 3, 4]
+            self.id_affine = torch.tensor([1, 0, 0, 0,
+                                           0, 1, 0, 0,
+                                           0, 0, 1, 0], dtype=torch.float, device='cuda')
 
         # configure core unet model
         self.unet_model = Unet(
@@ -160,26 +187,17 @@ class VxmAffineNet(nn.Module):
         mlp_in_channels = self.unet_model.final_nf
         hidden_channels = mlp_in_channels // 2
         out_channels = hidden_channels // 2
-        channels_lst = [mlp_in_channels, hidden_channels, out_channels]
+        channels_lst = [mlp_in_channels * pow(gap_size, self.ndims), hidden_channels, out_channels]
 
         self.norm = norm_layer(inshape)
         self.mlp = Mlp(channels_lst[0], channels_lst[1], channels_lst[2])
 
-        self.aff_head = nn.Linear(channels_lst[2], self.ndims)
-        self.aff_head.weight = nn.Parameter(torch.zeros(self.aff_head.weight.shape))
-        self.aff_head.bias = nn.Parameter(torch.zeros(self.aff_head.bias.shape))
+        self.GAP = NiNGAP(self.ndims, mlp_in_channels, out_shape=self.out_shape)
 
-        self.scl_head = nn.Linear(channels_lst[2], self.ndims)
-        self.scl_head.weight = nn.Parameter(torch.zeros(self.scl_head.weight.shape))
-        self.scl_head.bias = nn.Parameter(torch.zeros(self.scl_head.bias.shape))
-
-        self.trans_head = nn.Linear(channels_lst[2], self.ndims)
-        self.trans_head.weight = nn.Parameter(torch.zeros(self.trans_head.weight.shape))
-        self.trans_head.bias = nn.Parameter(torch.zeros(self.trans_head.bias.shape))
-
-        self.shear_head = nn.Linear(channels_lst[2], out_shear_channels)
-        self.shear_head.weight = nn.Parameter(torch.zeros(self.shear_head.weight.shape))
-        self.shear_head.bias = nn.Parameter(torch.zeros(self.shear_head.bias.shape))
+        self.aff_head = nn.Linear(channels_lst[2], out_affine_channels)
+        # Initialize the weights/bias with identity transformation
+        self.aff_head.weight.data.zero_()
+        self.aff_head.bias.data.copy_(self.id_affine)
 
         self.affine_trans = AffineTransformer()
 
@@ -190,16 +208,23 @@ class VxmAffineNet(nn.Module):
         x = self.unet_model(x)
 
         x = self.norm(x)
-        x = self.gap(x, 1)
-        x = x.reshape(N, self.unet_model.final_nf)
 
-        x = self.mlp(x)
-        aff = self.aff_head(x)
-        scl = self.scl_head(x)
-        trans = self.trans_head(x)
-        shr = self.shear_head(x)
+        if self.use_gap:
+            # 用卷积
+            aff = self.GAP(x) + self.id_affine.reshape(self.out_shape).expand(N, *self.out_shape).cuda()
+        else:
+            # 用全连接
+            x = self.gap(x, self.gap_size)
+            x = x.reshape(N, self.unet_model.final_nf * pow(self.gap_size, self.ndims))
+            x = self.mlp(x)
+            aff = self.aff_head(x)
 
-        out, mat = self.affine_trans(source, aff, scl, trans, shr)
+            if self.ndims == 2:
+                aff = aff.reshape(N, 2, 3)
+            elif self.ndims == 3:
+                aff = aff.reshape(N, 3, 4)
+
+        out, mat = self.affine_trans(source, aff)
         return out, mat
 
 
@@ -212,96 +237,18 @@ class AffineTransformer(nn.Module):
         super().__init__()
         self.mode = mode
 
-    def forward(self, src, affine, scale, translate, shear):
+    def forward(self, src, affine):
         if len(src.shape) == 5:
             # 3D 放射配准
-            theta_x = affine[:, 0]
-            theta_y = affine[:, 1]
-            theta_z = affine[:, 2]
+            grid = F.affine_grid(affine, src.shape, align_corners=True)
 
-            scale_x = scale[:, 0]
-            scale_y = scale[:, 1]
-            scale_z = scale[:, 2]
-
-            trans_x = translate[:, 0]
-            trans_y = translate[:, 1]
-            trans_z = translate[:, 2]
-
-            shear_xy = shear[:, 0]
-            shear_xz = shear[:, 1]
-            shear_yx = shear[:, 2]
-            shear_yz = shear[:, 3]
-            shear_zx = shear[:, 4]
-            shear_zy = shear[:, 5]
-
-            rot_mat_x = torch.stack(
-                [torch.stack([torch.ones_like(theta_x), torch.zeros_like(theta_x), torch.zeros_like(theta_x)], dim=1),
-                 torch.stack([torch.zeros_like(theta_x), torch.cos(theta_x), -torch.sin(theta_x)], dim=1),
-                 torch.stack([torch.zeros_like(theta_x), torch.sin(theta_x), torch.cos(theta_x)], dim=1)], dim=2).cuda()
-
-            rot_mat_y = torch.stack(
-                [torch.stack([torch.cos(theta_y), torch.zeros_like(theta_y), torch.sin(theta_y)], dim=1),
-                 torch.stack([torch.zeros_like(theta_y), torch.ones_like(theta_x), torch.zeros_like(theta_x)], dim=1),
-                 torch.stack([-torch.sin(theta_y), torch.zeros_like(theta_y), torch.cos(theta_y)], dim=1)], dim=2).cuda()
-
-            rot_mat_z = torch.stack(
-                [torch.stack([torch.cos(theta_z), -torch.sin(theta_z), torch.zeros_like(theta_y)], dim=1),
-                 torch.stack([torch.sin(theta_z), torch.cos(theta_z), torch.zeros_like(theta_y)], dim=1),
-                 torch.stack([torch.zeros_like(theta_y), torch.zeros_like(theta_y), torch.ones_like(theta_x)], dim=1)],
-                dim=2).cuda()
-
-            scale_mat = torch.stack(
-                [torch.stack([scale_x, torch.zeros_like(theta_z), torch.zeros_like(theta_y)], dim=1),
-                 torch.stack([torch.zeros_like(theta_z), scale_y, torch.zeros_like(theta_y)], dim=1),
-                 torch.stack([torch.zeros_like(theta_y), torch.zeros_like(theta_y), scale_z], dim=1)], dim=2).cuda()
-
-            shear_mat = torch.stack(
-                [torch.stack([torch.ones_like(theta_x), torch.tan(shear_xy), torch.tan(shear_xz)], dim=1),
-                 torch.stack([torch.tan(shear_yx), torch.ones_like(theta_x), torch.tan(shear_yz)], dim=1),
-                 torch.stack([torch.tan(shear_zx), torch.tan(shear_zy), torch.ones_like(theta_x)], dim=1)], dim=2).cuda()
-
-            trans = torch.stack([trans_x, trans_y, trans_z], dim=1).unsqueeze(dim=2)
-            mat = torch.bmm(shear_mat, torch.bmm(scale_mat, torch.bmm(rot_mat_z, torch.matmul(rot_mat_y, rot_mat_x))))
-            mat = torch.cat([mat, trans], dim=-1)
-            grid = F.affine_grid(mat, [src.shape[0], 3, src.shape[2], src.shape[3], src.shape[4]], align_corners=True)
-
-            return F.grid_sample(src, grid, align_corners=True, mode=self.mode), mat
+            return F.grid_sample(src, grid, align_corners=True, mode=self.mode), affine
 
         elif len(src.shape) == 4:
             # 2D 放射配准
-            theta_x = affine[:, 0]
-            theta_y = affine[:, 1]
+            grid = F.affine_grid(affine, src.shape, align_corners=True)
 
-            scale_x = scale[:, 0]
-            scale_y = scale[:, 1]
-
-            trans_x = translate[:, 0]
-            trans_y = translate[:, 1]
-
-            shear_xy = shear[:, 0]
-            shear_yx = shear[:, 2]
-
-            rot_mat_x = torch.stack(
-                [torch.stack([torch.cos(theta_x), -torch.sin(theta_x)], dim=1),
-                 torch.stack([torch.sin(theta_x), torch.cos(theta_x)], dim=1)], dim=2).cuda()
-
-            scale_mat = torch.stack(
-                [torch.stack([scale_x, torch.zeros_like(theta_z), torch.zeros_like(theta_y)], dim=1),
-                 torch.stack([torch.zeros_like(theta_z), scale_y, torch.zeros_like(theta_y)], dim=1),
-                 torch.stack([torch.zeros_like(theta_y), torch.zeros_like(theta_y), scale_z], dim=1)], dim=2).cuda()
-
-            shear_mat = torch.stack(
-                [torch.stack([torch.ones_like(theta_x), torch.tan(shear_xy), torch.tan(shear_xz)], dim=1),
-                 torch.stack([torch.tan(shear_yx), torch.ones_like(theta_x), torch.tan(shear_yz)], dim=1),
-                 torch.stack([torch.tan(shear_zx), torch.tan(shear_zy), torch.ones_like(theta_x)], dim=1)],
-                dim=2).cuda()
-
-            trans = torch.stack([trans_x, trans_y, trans_z], dim=1).unsqueeze(dim=2)
-            mat = torch.bmm(shear_mat, torch.bmm(scale_mat, torch.bmm(rot_mat_z, torch.matmul(rot_mat_y, rot_mat_x))))
-            mat = torch.cat([mat, trans], dim=-1)
-            grid = F.affine_grid(mat, [src.shape[0], 3, src.shape[2], src.shape[3], src.shape[4]], align_corners=True)
-
-            return F.grid_sample(src, grid, align_corners=True, mode=self.mode), mat
+            return F.grid_sample(src, grid, align_corners=True, mode=self.mode), affine
 
 
 class Unet(nn.Module):
@@ -461,6 +408,7 @@ class ApplyAffine(nn.Module):
     """
     Affine Transformer
     """
+
     def __init__(self, ):
         super().__init__()
 
@@ -471,9 +419,9 @@ class ApplyAffine(nn.Module):
 
 if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    N, C, H, W, D = 4, 1, 32, 32, 32  # 80, 80, 80
+    N, C, H, W = 4, 1, 32, 32  # 80, 80, 80
 
-    shape = [N, C, H, W, D]
+    shape = [N, C, H, W]
 
     x1 = torch.randn(shape, device=device)
     x2 = torch.randn(shape, device=device)
