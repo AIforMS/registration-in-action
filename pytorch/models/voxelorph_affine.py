@@ -122,6 +122,8 @@ class VxmAffineNet(nn.Module):
                  norm_layer=nn.LayerNorm,
                  gap_size=4,):
         """
+        这里的 affine 矩阵通过 AffineTransformer 的计算来引导网络生成合适的 affine 矩阵，我觉得它是更加细粒度的
+
         :param inshape: Input shape. e.g. (192, 192, 192)
         :param nb_unet_features: Unet convolutional features. Can be specified via a list of lists with
                 the form [[encoder feats], [decoder feats]], or as a single integer. If None (default),

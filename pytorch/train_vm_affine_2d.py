@@ -39,8 +39,7 @@ def main():
                         type=float, default=1e-4)  # 0.005 for AdamW, 4e-4 for Adam
     parser.add_argument("-apply_lr_scheduler", help="Need lr scheduler or not", action="store_true")
     parser.add_argument("-warmup_epochs", help="epochs for Warmup scheduler", type=int, default=10)
-    parser.add_argument("-epochs", help="Train epochs",
-                        type=int, default=200)
+    parser.add_argument("-epochs", help="Train epochs", type=int, default=100)  # 收敛很快
     parser.add_argument("-resume", help="Path to pretrained model to continute training",
                         default=None)  # "output/mnist/reg_net_199.pth"
     parser.add_argument("-val_interval", help="validation and saving interval", type=int, default=1)
@@ -51,7 +50,8 @@ def main():
 
     # losses args
     parser.add_argument("-gap_size", type=int, help="you know", choices=[1, 2, 4, 6], default=4)
-    parser.add_argument("-use_gap", type=lambda s: False if s == "False" else True, default=False)
+    parser.add_argument("-use_gap", help="If choose VxmAffineNet_regress as net, you can use gap for affine mat regressing",
+                        type=lambda s: False if s == "False" else True, default=False)
     parser.add_argument("-sim_loss", type=str, help="similarity criterion", choices=['MSE', 'NCC'],
                         default='MSE')
     parser.add_argument("-alpha", type=float, help="weight for regularization loss",

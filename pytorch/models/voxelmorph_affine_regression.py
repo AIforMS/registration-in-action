@@ -113,12 +113,10 @@ class NiNGAP(nn.Module):
     def __init__(self, ndims, in_channels, out_channels=1, out_shape=[2, 3]):
         super().__init__()
         self.convNiN1 = getattr(nn, f"Conv{ndims}d")(in_channels, in_channels // 2, kernel_size=3, padding=1)
-        self.convNiN1.weight.data.zeros_()
-        self.convNiN1.bias.data.zeros_()
+        self.convNiN1.bias.data.zero_()
 
         self.convNiN2 = getattr(nn, f"Conv{ndims}d")(in_channels // 2, out_channels, kernel_size=3, padding=1)
-        self.convNiN2.weight.data.zeros_()
-        self.convNiN2.bias.data.zeros_()
+        self.convNiN2.bias.data.zero_()
 
         self.pool = getattr(nn, f"AvgPool{ndims}d")(2)
         self.act = nn.ReLU(True)
@@ -144,6 +142,8 @@ class VxmAffineNet(nn.Module):
                  gap_size=4,
                  use_gap=True):
         """
+        这里的 affine 矩阵直接通过最后的全局平均池化层回归一个合适的 affine 矩阵，2x3 or 3x4 的矩阵
+
         :param inshape: Input shape. e.g. (192, 192, 192)
         :param nb_unet_features: Unet convolutional features. Can be specified via a list of lists with
                 the form [[encoder feats], [decoder feats]], or as a single integer. If None (default),
@@ -198,7 +198,7 @@ class VxmAffineNet(nn.Module):
         self.norm = norm_layer(inshape)
         self.mlp = Mlp(channels_lst[0], channels_lst[1], channels_lst[2])
 
-        self.GAP = NiNGAP(self.ndims, mlp_in_channels, out_shape=self.out_shape)
+        self.GAP = NiNGAP(self.ndims, self.unet_model.final_nf, out_shape=self.out_shape)
 
         self.aff_head = nn.Linear(channels_lst[2], out_affine_channels)
         # Initialize the weights/bias with identity transformation
