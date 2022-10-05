@@ -113,8 +113,14 @@ class NiNGAP(nn.Module):
     def __init__(self, ndims, in_channels, out_channels=1, out_shape=[2, 3]):
         super().__init__()
         self.convNiN1 = getattr(nn, f"Conv{ndims}d")(in_channels, in_channels // 2, kernel_size=3, padding=1)
+        self.convNiN1.weight.data.zeros_()
+        self.convNiN1.bias.data.zeros_()
+
         self.convNiN2 = getattr(nn, f"Conv{ndims}d")(in_channels // 2, out_channels, kernel_size=3, padding=1)
-        self.pool = getattr(nn, f"MaxPool{ndims}d")(2)
+        self.convNiN2.weight.data.zeros_()
+        self.convNiN2.bias.data.zeros_()
+
+        self.pool = getattr(nn, f"AvgPool{ndims}d")(2)
         self.act = nn.ReLU(True)
         self.Gap = getattr(nn, f"AdaptiveAvgPool{ndims}d")(output_size=out_shape)
 
@@ -184,10 +190,10 @@ class VxmAffineNet(nn.Module):
 
         self.gap = getattr(F, f"adaptive_avg_pool{self.ndims}d")
 
-        mlp_in_channels = self.unet_model.final_nf
+        mlp_in_channels = self.unet_model.final_nf * pow(gap_size, self.ndims)
         hidden_channels = mlp_in_channels // 2
         out_channels = hidden_channels // 2
-        channels_lst = [mlp_in_channels * pow(gap_size, self.ndims), hidden_channels, out_channels]
+        channels_lst = [mlp_in_channels, hidden_channels, out_channels]
 
         self.norm = norm_layer(inshape)
         self.mlp = Mlp(channels_lst[0], channels_lst[1], channels_lst[2])
@@ -211,7 +217,7 @@ class VxmAffineNet(nn.Module):
 
         if self.use_gap:
             # 用卷积
-            aff = self.GAP(x) + self.id_affine.reshape(self.out_shape).expand(N, *self.out_shape).cuda()
+            aff = self.GAP(x) + self.id_affine.reshape(self.out_shape).expand(N, *self.out_shape)
         else:
             # 用全连接
             x = self.gap(x, self.gap_size)

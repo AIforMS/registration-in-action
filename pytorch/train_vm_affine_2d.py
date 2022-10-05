@@ -23,13 +23,16 @@ def main():
 
     # dataset args
     parser.add_argument("-output", help="filename (without extension) for output",
-                        default="output/mnist-affine/")
+                        default="output/mnist-affine-GT/")
     parser.add_argument("-val_size", help="validation set size, which is divided from the training set",
                         type=int, default=512)
     parser.add_argument("-choose_label", help="Which number to choose for registration training",
                         type=int, default=5)
 
     # training args
+    parser.add_argument("-choose_net", help="Choose VM backbone", type=str,
+                        choices=['VxmAffineNet', 'VxmAffineNet_regress'],
+                        default='VxmAffineNet_regress')
     parser.add_argument("-batch_size", help="Dataloader batch size", type=int, default=64)
     parser.add_argument("-choose_optim", help="Choose optimizer", type=str, choices=['Adam', 'AdamW'], default='Adam')
     parser.add_argument("-lr", help="Optimizer learning rate, keep pace with batch_size",
@@ -81,14 +84,18 @@ def main():
     # initialise trainable network parts
     enc_nf = [16, 32, 32, 32]
     dec_nf = [32, 32, 32, 32, 32, 16, 16]
-    reg_net = VxmAffineNet_regress(
+
+    if args.choose_net == 'VxmAffineNet_regress':
+        net = VxmAffineNet_regress
+    else:
+        net = VxmAffineNet
+    reg_net = net(
         inshape=[32, 32],
-        nb_unet_features=[enc_nf, dec_nf],
-        gap_size=args.gap_size,
-        use_gap=args.use_gap)
+        nb_unet_features=[enc_nf, dec_nf])
     reg_net.to(device)
 
-    logger.info(f'VM reg_net params: {countParam(reg_net)}, training with {args.choose_optim} with lr of {args.lr}')
+    logger.info(f'{args.choose_net} reg_net params: {countParam(reg_net)}, '
+                f'training with {args.choose_optim} with lr of {args.lr}')
 
     if args.resume:
         reg_net = reg_net.load(args.resume, device=device).to(device)
