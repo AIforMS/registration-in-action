@@ -14,20 +14,28 @@
     - [DeepReg Intro to DLIR](https://github.com/DeepRegNet/DeepReg/blob/main/docs/Intro_to_Medical_Image_Registration.ipynb)
 
 
-- 推荐 DLIR 领域大佬：
+- 推荐 DLIR 名人堂：
 
     | 学者 | 代表作 | 个人网页 | 备注 |
     | -- | -- | -- | -- |
     | Adrian V. Dalca | [VoxelMorph](https://arxiv.org/abs/1809.05231) | http://www.mit.edu/~adalca/ | VM 掀起 DLIR 热潮 |
     | MP Heinrich, L Hansen | [Deeds](https://github.com/mattiaspaul/deedsBCV)、[OBELISK](https://github.com/mattiaspaul/OBELISK)、[PDD_Net](https://github.com/multimodallearning/pdd_net) | [mpheinrich](http://mpheinrich.de/)、 [researchgate](https://www.researchgate.net/profile/Mattias-Heinrich) | Deeds 是我用过配准性能最好的，幸好它是传统配准 :grimacing: ，OBELISK 分割性能也很好，而且轻量。 |
     | Yipeng Hu | [Weakly Reg](https://www.sciencedirect.com/science/article/pii/S1361841518301051?via%3Dihub)、[DeepReg](https://github.com/DeepRegNet/DeepReg) | https://iris.ucl.ac.uk/iris/browse/profile?upi=YHUXX66 | 我们开始使用分割标签做弱监督配准学习 |
-    | Tony C.W. Mok | [LapIRN](https://github.com/cwmok)、[C2FViT](https://github.com/cwmok/C2FViT) | https://cwmok.github.io/ | 他总是第一名 |
+    | Tony C.W. Mok | [LapIRN](https://github.com/cwmok)、[C2FViT](https://github.com/cwmok/C2FViT) | https://cwmok.github.io/ | 无监督脑部配准，他总是第一名 |
+    | Chen Junyu | [TransMorph](https://github.com/junyuchen245/TransMorph_Transformer_for_Medical_Image_Registration)、[ViT-V-Net](https://github.com/junyuchen245/ViT-V-Net_for_3D_Image_Registration_Pytorch) | https://github.com/junyuchen245 | Transformer + CNN 版的 VoxelMorph，很多代码可以借鉴 |  
     | ANTs | [Advanced Normalization Tools](https://github.com/ANTsX/ANTsPy) | [GitHub](https://github.com/ANTsX/ANTsPy)、[CSDN](https://blog.csdn.net/zuzhiang/article/details/104930000) | 常用的传统配准方法 baseline |
 
 - 推荐文献检索网站：
 
+    - https://www.semanticscholar.org/
     - https://www.connectedpapers.com/
     - https://paperswithcode.com/
+
+- 推荐综述文献：
+
+    - Transforming medical imaging with Transformers? A comparative review of key properties, current progresses, and future perspectives. Medical Image Analysis, 2022.
+    - Deep learning in medical image registration: a survey. Machine Vision and Applications, 2019.
+    - Is Image-to-Image Translation the Panacea for Multimodal Image Registration? A Comparative Study. CVPR, 2021.
 
 ## 2D 配准
 
